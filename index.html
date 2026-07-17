@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control de Alta — RE/MAX Río</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap");
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --rm-red: #FF1200;
+  --rm-blue: #0043FF;
+  --rm-red-bridge: #AA1120;
+  --rm-red-deep: #660000;
+  --rm-blue-deep: #000E35;
+  --rm-blue-bridge: #0C2749;
+  --rm-graphite: #232323;
+  --rm-cream: #F7F5EE;
+  --bg: #F7F5EE;
+  --surface: #FFFFFF;
+  --surface-muted: #EFEDE5;
+  --fg: #232323;
+  --fg-strong: #000000;
+  --fg-muted: #6B6B6B;
+  --border: #E5E1D6;
+  --font: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-1: 0 1px 2px rgba(0,14,53,0.06), 0 1px 1px rgba(0,14,53,0.04);
+  --shadow-2: 0 2px 6px rgba(0,14,53,0.08), 0 1px 2px rgba(0,14,53,0.06);
+  --shadow-3: 0 8px 24px rgba(0,14,53,0.10), 0 2px 6px rgba(0,14,53,0.06);
+  --shadow-red: 0 8px 24px rgba(255,18,0,0.22);
+  --ok: #1A7A4A; --ok-bg: #EAF7EF;
+  --warn: #B45309; --warn-bg: #FEF3C7;
+  --err: #C0392B; --err-bg: #FDEDEC;
+}
+html, body { background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--rm-red); color: #fff; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.site-header { position: sticky; top: 0; z-index: 50; background: rgba(247,245,238,0.92); backdrop-filter: saturate(140%) blur(10px); border-bottom: 1px solid var(--border); }
+.site-header__inner { max-width: 1000px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 14px; height: 72px; }
+.brand-lockup { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 20px; letter-spacing: -0.02em; color: var(--fg-strong); }
+.brand-badge { background: var(--rm-red); color: #fff; font-weight: 900; font-size: 15px; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.02em; }
+.brand-sub { font-size: 13px; font-weight: 600; color: var(--fg-muted); }
+.container { max-width: 1000px; margin: 0 auto; padding: 0 32px; }
+.main-wrap { padding: 40px 0 80px; }
+.eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; color: var(--rm-red); display: inline-flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.eyebrow::before { content:""; width:24px; height:2px; background:var(--rm-red); display:block; }
+.page-title { font-weight: 900; font-size: clamp(30px, 4.5vw, 46px); letter-spacing: -0.02em; line-height: 1.0; text-transform: uppercase; color: var(--fg-strong); margin-bottom: 12px; }
+.page-lede { font-size: 15px; color: var(--fg-muted); max-width: 520px; line-height: 1.6; margin-bottom: 32px; }
+.dropzone { border: 2px dashed var(--border); border-radius: 12px; background: #fff; padding: 52px 32px; text-align: center; cursor: pointer; transition: border-color .2s var(--ease-out), background .2s var(--ease-out); box-shadow: var(--shadow-1); }
+.dropzone.drag { border-color: var(--rm-blue); background: #F0F4FF; }
+.dropzone__icon { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 12px; background: rgba(255,18,0,0.08); display: grid; place-items: center; color: var(--rm-red); }
+.dropzone__title { font-weight: 800; font-size: 19px; letter-spacing: -0.01em; color: var(--fg-strong); margin-bottom: 6px; }
+.dropzone__sub { font-size: 13px; color: var(--fg-muted); line-height: 1.5; }
+.filetags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.filetag { background: var(--rm-blue-deep); color: #fff; font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 8px; }
+.filetag button { background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer; font-size: 16px; padding: 0; line-height: 1; display: grid; place-items: center; }
+.filetag button:hover { color: #fff; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font); font-weight: 700; font-size: 15px; letter-spacing: 0.01em; padding: 15px 28px; border-radius: 4px; border: none; cursor: pointer; transition: background .12s var(--ease-out), transform .12s var(--ease-out), box-shadow .12s var(--ease-out); width: 100%; margin-top: 24px; }
+.btn-primary { background: var(--rm-red); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--rm-red-bridge); box-shadow: var(--shadow-red); }
+.btn-primary:active:not(:disabled) { background: var(--rm-red-deep); transform: scale(0.99); }
+.btn-primary:disabled { background: #D8D3C6; color: #fff; cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--rm-blue-deep); border: 1.5px solid var(--border); width: auto; padding: 11px 20px; font-size: 13px; margin-top: 28px; }
+.btn-ghost:hover { border-color: var(--rm-blue-deep); }
+.loading { text-align: center; padding: 72px 0; }
+.spinner { width: 44px; height: 44px; border: 3px solid var(--border); border-top-color: var(--rm-red); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+.loading__text { color: var(--fg-muted); font-size: 14px; font-weight: 600; }
+.loading__hint { color: var(--fg-muted); font-size: 12px; margin-top: 6px; opacity: 0.7; }
+.errbox { background: var(--err-bg); border: 1px solid #F1B0B7; border-radius: 8px; padding: 14px 18px; margin-bottom: 24px; font-size: 13px; color: var(--err); font-weight: 500; }
+.report { animation: fadeUp .4s var(--ease-out); }
+.verdict-hero { border-radius: 12px; padding: 28px 32px; margin-bottom: 20px; box-shadow: var(--shadow-2); }
+.verdict-hero.APTO { background: var(--ok-bg); border: 1px solid #A7DFC0; }
+.verdict-hero.OBSERVADO { background: var(--warn-bg); border: 1px solid #F5D57F; }
+.verdict-hero.RECHAZADO { background: var(--err-bg); border: 1px solid #F1B0B7; }
+.verdict-hero__type { font-weight: 900; font-size: 24px; letter-spacing: -0.02em; color: var(--fg-strong); text-transform: uppercase; line-height: 1.1; }
+.verdict-hero__addr { font-size: 14px; color: var(--fg-muted); margin-top: 4px; }
+.verdict-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 800; letter-spacing: 0.02em; margin-top: 16px; text-transform: uppercase; }
+.verdict-badge.APTO { background: var(--ok); color: #fff; }
+.verdict-badge.OBSERVADO { background: var(--warn); color: #fff; }
+.verdict-badge.RECHAZADO { background: var(--err); color: #fff; }
+.warn-strip { background: var(--warn-bg); border: 1px solid #F5D57F; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: var(--warn); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 14px; box-shadow: var(--shadow-1); }
+.card__title { padding: 14px 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.14em; color: var(--rm-blue-deep); background: var(--surface-muted); border-bottom: 1px solid var(--border); }
+.datagrid { display: grid; grid-template-columns: 1fr 1fr; }
+.datacell { padding: 13px 20px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.datacell:nth-child(even) { border-right: none; }
+.datacell__label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--fg-muted); margin-bottom: 4px; }
+.datacell__value { font-size: 14px; font-weight: 600; color: var(--fg-strong); }
+.checkrow { display: flex; align-items: flex-start; gap: 12px; padding: 13px 20px; border-bottom: 1px solid var(--border); }
+.checkrow:last-child { border-bottom: none; }
+.checkrow__icon { flex-shrink: 0; margin-top: 1px; width: 20px; height: 20px; display: grid; place-items: center; }
+.checkrow__label { font-size: 14px; font-weight: 600; color: var(--fg-strong); }
+.checkrow__detail { font-size: 12.5px; color: var(--fg-muted); margin-top: 2px; line-height: 1.5; }
+.pill-na { display: inline-block; background: var(--surface-muted); color: var(--fg-muted); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+.info-strip { grid-column: span 2; padding: 11px 20px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.info-strip.blue { background: #EEF3FF; color: var(--rm-blue-deep); }
+.info-strip.green { background: var(--ok-bg); color: var(--ok); }
+@media (max-width: 640px) {
+  .datagrid { grid-template-columns: 1fr; }
+  .datacell { border-right: none; }
+  .container { padding: 0 20px; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef } = React;
+
+const FERIADOS = new Set([
+  "2025-01-01","2025-02-03","2025-02-04","2025-03-24","2025-04-02","2025-04-17","2025-04-18","2025-05-01","2025-05-25","2025-06-16","2025-06-20","2025-07-09","2025-08-17","2025-10-12","2025-11-20","2025-11-21","2025-12-08","2025-12-25",
+  "2026-01-01","2026-02-16","2026-02-17","2026-03-23","2026-03-24","2026-04-02","2026-04-03","2026-05-01","2026-05-25","2026-06-15","2026-06-20","2026-07-09","2026-07-10","2026-08-17","2026-10-12","2026-11-23","2026-12-07","2026-12-08","2026-12-25"
+]);
+
+function diasHastaVenc(fechaStr) {
+  if (!fechaStr) return null;
+  const [d,m,y] = fechaStr.split('/');
+  if (!d||!m||!y) return null;
+  const fv = new Date(+y, +m-1, +d);
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  return Math.round((fv - hoy)/86400000);
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+const SYSTEM_PROMPT = `Sos un asistente de back office inmobiliario para RE/MAX Río (Argentina).
+Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (sin markdown, sin texto extra) con esta estructura exacta:
+
+{
+  "inmueble": { "tipo": string, "direccion": string, "localidad": string },
+  "titulares": [{ "nombre": string, "dni": string }],
+  "autorizacion": {
+    "encontrada": boolean, "multiples_autorizaciones": boolean, "uif_en_escritura": boolean,
+    "fecha_firma": "DD/MM/YYYY" or null, "plazo_dias_habiles": number or null,
+    "fecha_vencimiento_calculada": "DD/MM/YYYY" or null, "comision_porcentaje": string or null,
+    "direccion": string or null, "m2_cubiertos": string or null, "m2_semicubiertos": string or null,
+    "m2_descubiertos": string or null, "m2_totales": string or null,
+    "firmante_nombre": string or null, "firmante_dni": string or null
+  },
+  "escritura": {
+    "encontrada": boolean, "titulares": [{ "nombre": string, "dni": string or null }],
+    "direccion": string or null, "m2_cubiertos": string or null, "m2_semicubiertos": string or null,
+    "m2_descubiertos": string or null, "m2_totales": string or null,
+    "matricula_rpi": string or null, "sello_rpi": boolean
+  },
+  "dni": { "encontrado": boolean, "nombre": string or null, "numero": string or null },
+  "uif": { "encontrado": boolean, "nombre": string or null, "dni": string or null },
+  "declaratoria": { "encontrada": boolean, "herederos": [{ "nombre": string, "dni": string or null }] },
+  "poder": { "encontrado": boolean, "apoderado_nombre": string or null, "apoderado_dni": string or null, "poderdante_nombre": string or null, "vigente": boolean or null },
+  "cruces": {
+    "nombre_autorizacion_vs_escritura": { "aplica": boolean, "ok": boolean or null, "detalle": string },
+    "nombre_autorizacion_vs_dni": { "ok": boolean, "detalle": string },
+    "nombre_autorizacion_vs_uif": { "aplica": boolean, "ok": boolean or null, "detalle": string },
+    "dni_autorizacion_vs_dni": { "ok": boolean, "detalle": string },
+    "dni_autorizacion_vs_uif": { "aplica": boolean, "ok": boolean or null, "detalle": string },
+    "direccion_autorizacion_vs_escritura": { "ok": boolean, "detalle": string },
+    "m2_autorizacion_vs_escritura": { "aplica": boolean, "ok": boolean or null, "detalle": string },
+    "declaratoria_vs_escritura": { "aplica": boolean, "ok": boolean or null, "detalle": string },
+    "declaratoria_vs_autorizacion": { "aplica": boolean, "ok": boolean or null, "detalle": string },
+    "poder_habilita_firmante": { "aplica": boolean, "ok": boolean or null, "detalle": string }
+  },
+  "documentos_faltantes": string[], "alertas": string[],
+  "veredicto": "APTO" or "OBSERVADO" or "RECHAZADO"
+}
+
+REGLAS CRÍTICAS:
+Documentos obligatorios siempre: Autorización, DNI, Escritura.
+UIF: revisar qué indica la autorización de venta:
+- Si dice explícitamente que la UIF se firma en escritura (frases como "la UIF se firma en escritura", "UIF en escritura", o similar): uif_en_escritura=true, NO es obligatoria, no advertir si falta, no cruzar.
+- Si dice que la UIF se firma en el momento, o no aclara nada: uif_en_escritura=false, ES obligatoria. Si no está adjunta: agregar a documentos_faltantes y marcar RECHAZADO.
+RECHAZADO si falta Autorización, DNI o Escritura. Si falta UIF y uif_en_escritura=false, también RECHAZADO.
+
+Múltiples autorizaciones: si se presentan dos o más documentos de autorización firmados por separado (por ejemplo, cada heredero firma la suya), esto es CORRECTO. multiples_autorizaciones=true, tratarlos como un conjunto válido y cruzar los datos combinados.
+
+Declaratoria de herederos (si está presente):
+- Verificar que TODOS los herederos listados en la declaratoria aparezcan como titulares en la escritura.
+- Verificar que TODOS los herederos aparezcan como firmantes en la autorización de venta, SALVO que haya un poder notarial que habilite a uno a firmar en representación del resto.
+- Si hay poder: verificar que el apoderado que firma la autorización coincida con el apoderado designado en el poder, y que el poderdante coincida con los herederos.
+- declaratoria_vs_escritura.aplica=true y declaratoria_vs_autorizacion.aplica=true si hay declaratoria; poder_habilita_firmante.aplica=true si hay poder.
+
+Sin declaratoria: declaratoria_vs_escritura, declaratoria_vs_autorizacion y poder_habilita_firmante tienen aplica=false, ok=null, detalle="No aplica".
+nombre_autorizacion_vs_escritura: aplica=false (ok=null, detalle="Con declaratoria de herederos la escritura está a nombre del causante, no aplica") si hay declaratoria. Si NO hay declaratoria, aplica=true y verificar normalmente.
+Si uif_en_escritura=true: nombre_autorizacion_vs_uif y dni_autorizacion_vs_uif tienen aplica=false, ok=null, detalle="UIF se firma en escritura, no aplica".
+
+M² declarados: NO son obligatorios en la autorización. Extraerlos con prioridad:
+1. Superficie explícita (superficie cubierta, sup. total, m², etc).
+2. Si no hay, buscar medidas de frente y fondo (en números o letras), convertir a metros y multiplicar frente×fondo. Indicar ej: "~487 m² (calculado frente×fondo)".
+3. Si no se pueden determinar, null y alerta "M² no encontrados en escritura, verificar manualmente".
+NO confundir m² con números de matrícula, partida, nomenclatura catastral, folio, tomo o inscripción RPI.
+m2_autorizacion_vs_escritura aplica=true solo si ambos tienen m2; si la autorización no los tiene, aplica=false, ok=null, detalle="M² no declarados en autorización, no aplica cruce".
+Cédula catastral: NO es requerida. No mencionarla en documentos_faltantes.
+
+fecha_vencimiento_calculada: sumá plazo_dias_habiles a fecha_firma contando solo días hábiles (lun-vie), excluyendo feriados de Argentina 2025-2026: 2026-06-15, 2026-06-20, 2026-07-09, 2026-07-10, 2026-08-17, 2026-10-12, 2026-11-23, 2026-12-07, 2026-12-08, 2026-12-25.
+
+VEREDICTO: APTO si todos los obligatorios presentes y todos los cruces que aplican con ok=true. OBSERVADO si algún cruce falla o inconsistencias menores pero están todos los docs. RECHAZADO si falta algún obligatorio.
+En alertas: cualquier inconsistencia, dato ilegible o situación que merece atención.`;
+
+const CRUCES_LABELS = {
+  nombre_autorizacion_vs_escritura: "Nombre: Autorización vs Escritura",
+  nombre_autorizacion_vs_dni: "Nombre: Autorización vs DNI",
+  nombre_autorizacion_vs_uif: "Nombre: Autorización vs UIF",
+  dni_autorizacion_vs_dni: "DNI: Autorización vs DNI",
+  dni_autorizacion_vs_uif: "DNI: Autorización vs UIF",
+  direccion_autorizacion_vs_escritura: "Dirección: Autorización vs Escritura",
+  m2_autorizacion_vs_escritura: "M²: Autorización vs Escritura",
+  declaratoria_vs_escritura: "Declaratoria: Herederos vs Escritura",
+  declaratoria_vs_autorizacion: "Declaratoria: Herederos vs Autorización",
+  poder_habilita_firmante: "Poder: Apoderado vs Firmante"
+};
+
+function IconCheck() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#1A7A4A"/><path d="M7 12.5l3 3 7-7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
+function IconX() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#C0392B"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
+function IconWarn() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3L12 3z" fill="#B45309"/><path d="M12 9v5M12 16.5v.5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
+function IconNA() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#D8D3C6"/><path d="M7 12h10" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
+function IconUpload() { return <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 16V4M12 4l-5 5M12 4l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>; }
+
+function App() {
+  const [files, setFiles] = useState([]);
+  const [stage, setStage] = useState("upload");
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+  const [drag, setDrag] = useState(false);
+  const inputRef = useRef();
+
+  function addFiles(list) {
+    const pdfs = [...list].filter(f => f.type === "application/pdf");
+    setFiles(prev => {
+      const names = prev.map(f => f.name);
+      return [...prev, ...pdfs.filter(f => !names.includes(f.name))];
+    });
+  }
+  function removeFile(name) { setFiles(prev => prev.filter(f => f.name !== name)); }
+
+  async function analyze() {
+    setStage("loading"); setError(null);
+    try {
+      const content = [];
+      for (const file of files) {
+        const b64 = await toBase64(file);
+        content.push({ type: "document", source: { type: "base64", media_type: "application/pdf", data: b64 }, title: file.name });
+      }
+      content.push({ type: "text", text: SYSTEM_PROMPT });
+
+      const res = await fetch("/api/analizar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 4000, messages: [{ role: "user", content }] })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(typeof data.error === "string" ? data.error : data.error.message);
+      const raw = data.content.map(i => i.text || "").join("").replace(/```json|```/g, "").trim();
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error("No se encontró JSON en la respuesta");
+      setResult(JSON.parse(jsonMatch[0]));
+      setStage("report");
+    } catch (e) {
+      setError(e.message);
+      setStage("upload");
+    }
+  }
+
+  function DC({ label, value, span }) {
+    return <div className="datacell" style={span ? {gridColumn:"span 2", borderRight:"none"} : {}}>
+      <div className="datacell__label">{label}</div>
+      <div className="datacell__value">{value || "—"}</div>
+    </div>;
+  }
+  function CR({ status, label, detail }) {
+    const icon = status === "ok" ? <IconCheck/> : status === "err" ? <IconX/> : status === "warn" ? <IconWarn/> : <IconNA/>;
+    return <div className="checkrow">
+      <span className="checkrow__icon">{icon}</span>
+      <div><div className="checkrow__label">{label}{status === "na" && <span className="pill-na">No aplica</span>}</div>
+      {detail && status !== "na" && <div className="checkrow__detail">{detail}</div>}</div>
+    </div>;
+  }
+
+  return (
+    <div>
+      <header className="site-header">
+        <div className="site-header__inner">
+          <div className="brand-lockup"><span className="brand-badge">RE/MAX</span> Río</div>
+          <span className="brand-sub">· Control de Alta de Publicación</span>
+        </div>
+      </header>
+
+      <div className="main-wrap">
+        <div className="container">
+
+          {stage === "upload" && (
+            <div>
+              <div className="eyebrow">Back office</div>
+              <h1 className="page-title">Control de<br/>alta de publicación</h1>
+              <p className="page-lede">Subí la documentación de la propiedad y verificá en segundos si está en condiciones para dar el alta. Cruce automático de datos entre autorización, DNI, UIF y escritura.</p>
+
+              {error && <div className="errbox">⚠ {error}</div>}
+
+              <div className={`dropzone${drag ? " drag" : ""}`}
+                onClick={() => inputRef.current.click()}
+                onDragOver={e => { e.preventDefault(); setDrag(true); }}
+                onDragLeave={() => setDrag(false)}
+                onDrop={e => { e.preventDefault(); setDrag(false); addFiles(e.dataTransfer.files); }}>
+                <input ref={inputRef} type="file" multiple accept=".pdf" style={{display:"none"}} onChange={e => addFiles(e.target.files)} />
+                <div className="dropzone__icon"><IconUpload/></div>
+                <div className="dropzone__title">Subí los documentos de la propiedad</div>
+                <div className="dropzone__sub">Autorización · DNI · UIF · Escritura · (Declaratoria · Poder · Expensas · Reglamento · Planos)</div>
+              </div>
+
+              {files.length > 0 && <div className="filetags">
+                {files.map(f => <span className="filetag" key={f.name}>{f.name}
+                  <button onClick={e => { e.stopPropagation(); removeFile(f.name); }}>×</button></span>)}
+              </div>}
+
+              <button className="btn btn-primary" disabled={!files.length} onClick={analyze}>Analizar documentación</button>
+            </div>
+          )}
+
+          {stage === "loading" && (
+            <div className="loading">
+              <div className="spinner"></div>
+              <div className="loading__text">Leyendo y cruzando documentos…</div>
+              <div className="loading__hint">Puede tardar hasta un minuto según la cantidad de PDFs</div>
+            </div>
+          )}
+
+          {stage === "report" && result && (() => {
+            const r = result;
+            const diasVenc = diasHastaVenc(r.autorizacion?.fecha_vencimiento_calculada);
+            const v = r.veredicto || "OBSERVADO";
+            return (
+              <div className="report">
+                <div className={`verdict-hero ${v}`}>
+                  <div className="verdict-hero__type">{r.inmueble?.tipo || "Propiedad"}</div>
+                  <div className="verdict-hero__addr">{r.inmueble?.direccion}{r.inmueble?.localidad ? " · " + r.inmueble.localidad : ""}</div>
+                  <div className={`verdict-badge ${v}`}>{v}</div>
+                </div>
+
+                {diasVenc !== null && diasVenc <= 15 && (
+                  <div className="warn-strip"><IconWarn/> {diasVenc < 0 ? `Autorización vencida hace ${Math.abs(diasVenc)} días (${r.autorizacion.fecha_vencimiento_calculada})` : `Autorización vence en ${diasVenc} días (${r.autorizacion.fecha_vencimiento_calculada})`}</div>
+                )}
+
+                <div className="card">
+                  <div className="card__title">Titulares</div>
+                  <div className="datagrid">
+                    {(r.titulares||[]).length === 0 ? <DC label="Titular" value="No identificado" span/> :
+                      r.titulares.flatMap((t,i) => [<DC key={"n"+i} label="Nombre" value={t.nombre}/>, <DC key={"d"+i} label="DNI" value={t.dni}/>])}
+                  </div>
+                </div>
+
+                <div className="card">
+                  <div className="card__title">Autorización de Venta</div>
+                  <div className="datagrid">
+                    <DC label="Fecha de firma" value={r.autorizacion?.fecha_firma}/>
+                    <DC label="Plazo" value={r.autorizacion?.plazo_dias_habiles ? r.autorizacion.plazo_dias_habiles + " días hábiles" : null}/>
+                    <DC label="Vencimiento" value={r.autorizacion?.fecha_vencimiento_calculada}/>
+                    <DC label="Comisión" value={r.autorizacion?.comision_porcentaje}/>
+                    <DC label="Dirección" value={r.autorizacion?.direccion}/>
+                    <DC label="M² Cubiertos" value={r.autorizacion?.m2_cubiertos}/>
+                    {(r.autorizacion?.m2_semicubiertos || r.autorizacion?.m2_descubiertos || r.autorizacion?.m2_totales) && <>
+                      <DC label="M² Semicubiertos" value={r.autorizacion?.m2_semicubiertos}/>
+                      <DC label="M² Descubiertos" value={r.autorizacion?.m2_descubiertos}/>
+                      <DC label="M² Totales" value={r.autorizacion?.m2_totales} span/>
+                    </>}
+                    {r.autorizacion?.firmante_nombre && <>
+                      <DC label="Firmante" value={r.autorizacion.firmante_nombre}/>
+                      <DC label="DNI Firmante" value={r.autorizacion.firmante_dni}/>
+                    </>}
+                    {r.autorizacion?.uif_en_escritura && <div className="info-strip blue">ℹ La UIF se firma en escritura — no requerida como documento separado</div>}
+                    {r.autorizacion?.multiples_autorizaciones && <div className="info-strip green">✓ Múltiples autorizaciones firmadas por separado — válidas en conjunto</div>}
+                  </div>
+                </div>
+
+                <div className="card">
+                  <div className="card__title">Escritura</div>
+                  <div className="datagrid">
+                    {(r.escritura?.titulares||[]).flatMap((t,i) => [
+                      <DC key={"en"+i} label={"Titular" + (r.escritura.titulares.length>1 ? " "+(i+1) : "")} value={t.nombre}/>,
+                      <DC key={"ed"+i} label="DNI" value={t.dni}/>])}
+                    <DC label="M² Cubiertos" value={r.escritura?.m2_cubiertos}/>
+                    <DC label="M² Totales" value={r.escritura?.m2_totales}/>
+                    {(r.escritura?.m2_semicubiertos || r.escritura?.m2_descubiertos) && <>
+                      <DC label="M² Semicubiertos" value={r.escritura?.m2_semicubiertos}/>
+                      <DC label="M² Descubiertos" value={r.escritura?.m2_descubiertos}/>
+                    </>}
+                    <DC label="Matrícula RPI" value={r.escritura?.matricula_rpi} span/>
+                  </div>
+                </div>
+
+                {r.declaratoria?.encontrada && (
+                  <div className="card">
+                    <div className="card__title">Declaratoria de Herederos</div>
+                    <div className="datagrid">
+                      {(r.declaratoria?.herederos||[]).length === 0 ? <DC label="Herederos" value="No identificados" span/> :
+                        r.declaratoria.herederos.flatMap((h,i) => [<DC key={"hn"+i} label={"Heredero "+(i+1)} value={h.nombre}/>, <DC key={"hd"+i} label="DNI" value={h.dni||"—"}/>])}
+                    </div>
+                  </div>
+                )}
+
+                {r.poder?.encontrado && (
+                  <div className="card">
+                    <div className="card__title">Poder Notarial</div>
+                    <div className="datagrid">
+                      <DC label="Apoderado" value={r.poder?.apoderado_nombre}/>
+                      <DC label="DNI Apoderado" value={r.poder?.apoderado_dni}/>
+                      <DC label="Poderdante" value={r.poder?.poderdante_nombre}/>
+                      <DC label="Vigente" value={r.poder?.vigente === true ? "Sí" : r.poder?.vigente === false ? "No" : "—"}/>
+                    </div>
+                  </div>
+                )}
+
+                <div className="card">
+                  <div className="card__title">Documentos obligatorios</div>
+                  {(r.documentos_faltantes||[]).length === 0 ? <CR status="ok" label="Todos los documentos obligatorios presentes"/> :
+                    r.documentos_faltantes.map((f,i) => <CR key={i} status="err" label={f}/>)}
+                </div>
+
+                <div className="card">
+                  <div className="card__title">Verificación cruzada</div>
+                  {Object.entries(r.cruces||{}).map(([key,val]) => {
+                    const na = val.aplica === false;
+                    return <CR key={key} status={na ? "na" : val.ok ? "ok" : "err"} label={CRUCES_LABELS[key]||key} detail={val.detalle}/>;
+                  })}
+                </div>
+
+                {(r.alertas||[]).length > 0 && (
+                  <div className="card">
+                    <div className="card__title">Alertas</div>
+                    {r.alertas.map((a,i) => <CR key={i} status="warn" label={a}/>)}
+                  </div>
+                )}
+
+                <button className="btn btn-ghost" onClick={() => { setStage("upload"); setResult(null); setFiles([]); }}>← Analizar otra propiedad</button>
+              </div>
+            );
+          })()}
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
