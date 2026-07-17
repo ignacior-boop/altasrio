@@ -145,8 +145,7 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
     "encontrada": boolean, "multiples_autorizaciones": boolean, "uif_en_escritura": boolean,
     "fecha_firma": "DD/MM/YYYY" or null, "plazo_dias_habiles": number or null,
     "fecha_vencimiento_calculada": "DD/MM/YYYY" or null, "comision_porcentaje": string or null,
-    "direccion": string or null, "m2_cubiertos": string or null, "m2_semicubiertos": string or null,
-    "m2_descubiertos": string or null, "m2_totales": string or null,
+    "direccion": string or null,
     "firmante_nombre": string or null, "firmante_dni": string or null
   },
   "escritura": {
@@ -166,7 +165,6 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
     "dni_autorizacion_vs_dni": { "ok": boolean, "detalle": string },
     "dni_autorizacion_vs_uif": { "aplica": boolean, "ok": boolean or null, "detalle": string },
     "direccion_autorizacion_vs_escritura": { "ok": boolean, "detalle": string },
-    "m2_autorizacion_vs_escritura": { "aplica": boolean, "ok": boolean or null, "detalle": string },
     "declaratoria_vs_escritura": { "aplica": boolean, "ok": boolean or null, "detalle": string },
     "declaratoria_vs_autorizacion": { "aplica": boolean, "ok": boolean or null, "detalle": string },
     "poder_habilita_firmante": { "aplica": boolean, "ok": boolean or null, "detalle": string }
@@ -212,18 +210,19 @@ FIRMAS ELECTRÓNICAS (Contractia u otra plataforma similar): Muchos documentos i
 Regla: si ese mismo Código de Auditoría aparece en el encabezado de TODAS las páginas del PDF (incluidas las páginas de la Autorización de Venta en sí, no solo la última hoja de detalle de firmas o un certificado anexo), la firma electrónica de esa persona es válida para la TOTALIDAD del documento, con el mismo efecto que una firma de puño y letra. Tratá a esa persona como firmante pleno de la autorización.
 En ese caso: multiples_autorizaciones puede ser true (manuscrita + electrónica combinadas son válidas como conjunto), declaratoria_vs_autorizacion.ok=true si todos los herederos firmaron (de puño y letra o electrónicamente, indistintamente), y NO generes alertas de duda tipo "falta confirmar si la firma electrónica corresponde a la Autorización o solo a otro anexo" cuando el código de auditoría del encabezado es idéntico en todas las páginas del PDF — eso ya lo confirma. Solo marcá ok=false o generá alerta si el código de auditoría de la página de detalle de firmas NO coincide con el de las páginas de la Autorización (indicio de que la firma electrónica pertenece a un documento distinto).
 
-M² declarados: NO son obligatorios en la autorización. Extraerlos con prioridad:
+M² declarados: NO se extraen ni se verifican en la Autorización de Venta (no es un dato obligatorio ahí y no se cruza). Extraé los m² ÚNICAMENTE de la Escritura, con esta prioridad:
 1. Superficie explícita (superficie cubierta, sup. total, m², etc).
 2. Si no hay, buscar medidas de frente y fondo (en números o letras), convertir a metros y multiplicar frente×fondo. Indicar ej: "~487 m² (calculado frente×fondo)".
 3. Si no se pueden determinar, null y alerta "M² no encontrados en escritura, verificar manualmente".
 NO confundir m² con números de matrícula, partida, nomenclatura catastral, folio, tomo o inscripción RPI.
-m2_autorizacion_vs_escritura aplica=true solo si ambos tienen m2; si la autorización no los tiene, aplica=false, ok=null, detalle="M² no declarados en autorización, no aplica cruce".
+No generes ningún cruce ni alerta comparando m² de la autorización contra la escritura.
 Cédula catastral: NO es requerida. No mencionarla en documentos_faltantes.
 
 fecha_vencimiento_calculada: sumá plazo_dias_habiles a fecha_firma contando solo días hábiles (lun-vie), excluyendo feriados de Argentina 2025-2026: 2026-06-15, 2026-06-20, 2026-07-09, 2026-07-10, 2026-08-17, 2026-10-12, 2026-11-23, 2026-12-07, 2026-12-08, 2026-12-25.
 
 VEREDICTO: APTO si todos los obligatorios presentes y todos los cruces que aplican con ok=true. OBSERVADO si algún cruce falla o inconsistencias menores pero están todos los docs. RECHAZADO si falta algún obligatorio.
-En alertas: cualquier inconsistencia, dato ilegible o situación que merece atención.`;
+En alertas: cualquier inconsistencia, dato ilegible o situación que merece atención.
+NO generes una alerta solo para informar que un agente colaborador, escribano, martillero u otro profesional mencionado en el Certificado de Garantía de Servicios Profesionales u otro anexo no presentó DNI o UIF — eso nunca es obligatorio para ellos porque no son parte compradora/vendedora. Si no hay ninguna irregularidad real asociada a esa persona, simplemente no la menciones.`;
 
 const CRUCES_LABELS = {
   nombre_autorizacion_vs_escritura: "Nombre: Autorización vs Escritura",
@@ -232,7 +231,6 @@ const CRUCES_LABELS = {
   dni_autorizacion_vs_dni: "DNI: Autorización vs DNI",
   dni_autorizacion_vs_uif: "DNI: Autorización vs UIF",
   direccion_autorizacion_vs_escritura: "Dirección: Autorización vs Escritura",
-  m2_autorizacion_vs_escritura: "M²: Autorización vs Escritura",
   declaratoria_vs_escritura: "Declaratoria: Herederos vs Escritura",
   declaratoria_vs_autorizacion: "Declaratoria: Herederos vs Autorización",
   poder_habilita_firmante: "Poder: Apoderado vs Firmante"
@@ -383,13 +381,7 @@ function App() {
                     <DC label="Plazo" value={r.autorizacion?.plazo_dias_habiles ? r.autorizacion.plazo_dias_habiles + " días hábiles" : null}/>
                     <DC label="Vencimiento" value={r.autorizacion?.fecha_vencimiento_calculada}/>
                     <DC label="Comisión" value={r.autorizacion?.comision_porcentaje}/>
-                    <DC label="Dirección" value={r.autorizacion?.direccion}/>
-                    <DC label="M² Cubiertos" value={r.autorizacion?.m2_cubiertos}/>
-                    {(r.autorizacion?.m2_semicubiertos || r.autorizacion?.m2_descubiertos || r.autorizacion?.m2_totales) && <>
-                      <DC label="M² Semicubiertos" value={r.autorizacion?.m2_semicubiertos}/>
-                      <DC label="M² Descubiertos" value={r.autorizacion?.m2_descubiertos}/>
-                      <DC label="M² Totales" value={r.autorizacion?.m2_totales} span/>
-                    </>}
+                    <DC label="Dirección" value={r.autorizacion?.direccion} span/>
                     {r.autorizacion?.firmante_nombre && <>
                       <DC label="Firmante" value={r.autorizacion.firmante_nombre}/>
                       <DC label="DNI Firmante" value={r.autorizacion.firmante_dni}/>
