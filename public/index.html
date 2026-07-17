@@ -155,8 +155,8 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
     "m2_descubiertos": string or null, "m2_totales": string or null,
     "matricula_rpi": string or null, "sello_rpi": boolean
   },
-  "dni": { "encontrado": boolean, "nombre": string or null, "numero": string or null },
-  "uif": { "encontrado": boolean, "nombre": string or null, "dni": string or null },
+  "dnis": [{ "nombre": string, "numero": string or null }],
+  "uifs": [{ "nombre": string, "dni": string or null, "pep_completado": boolean, "pep_resultado": "SI" or "NO" or null }],
   "declaratoria": { "encontrada": boolean, "herederos": [{ "nombre": string, "dni": string or null }] },
   "poder": { "encontrado": boolean, "apoderado_nombre": string or null, "apoderado_dni": string or null, "poderdante_nombre": string or null, "vigente": boolean or null },
   "cruces": {
@@ -176,11 +176,21 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
 }
 
 REGLAS CRÍTICAS:
-Documentos obligatorios siempre: Autorización, DNI, Escritura.
+Documentos obligatorios siempre: Autorización, Escritura.
+
+PERSONAS QUE DEBEN ACREDITAR IDENTIDAD (muy importante, leer con atención):
+- Si NO hay declaratoria de herederos: la(s) persona(s) obligada(s) son los titulares que firman la autorización.
+- Si HAY declaratoria de herederos: la persona obligada es CADA heredero que figure como autorizante en la autorización de venta (no solo quien firmó de puño y letra), salvo que exista poder notarial que habilite a uno a representar a otro (en ese caso el representado no necesita presentar DNI/UIF propio, pero si igual los presentó, informalos también).
+Para cada una de esas personas debe existir:
+  a) Un DNI propio: una entrada en el array "dnis" cuyo nombre coincida con esa persona (ignorá tildes, mayúsculas/minúsculas, orden nombre-apellido y pequeñas variantes de escritura al comparar nombres — son la misma persona si el nombre y apellido coinciden).
+  b) Si uif_en_escritura=false: un formulario UIF propio: una entrada en el array "uifs" cuyo nombre coincida con esa persona.
+Antes de agregar algo a "documentos_faltantes", revisá CUIDADOSAMENTE los arrays "dnis" y "uifs" completos (pueden venir de PDFs separados, o varias personas pueden estar en el mismo PDF) buscando una coincidencia de nombre. Un documento de identidad puede tener frente y dorso en el mismo PDF o en PDFs distintos: no lo cuentes dos veces ni lo declares faltante si ya aparece. Solo marcá como faltante el DNI o UIF de una persona si, tras revisar TODOS los documentos adjuntos, genuinamente no hay ninguna entrada con su nombre.
+Cada DNI o UIF faltante debe listarse en "documentos_faltantes" mencionando el nombre completo de la persona a la que le falta (ej: "DNI de JUAN PÉREZ", "Formulario UIF de JUAN PÉREZ").
+
 UIF: revisar qué indica la autorización de venta:
-- Si dice explícitamente que la UIF se firma en escritura (frases como "la UIF se firma en escritura", "UIF en escritura", o similar): uif_en_escritura=true, NO es obligatoria, no advertir si falta, no cruzar.
-- Si dice que la UIF se firma en el momento, o no aclara nada: uif_en_escritura=false, ES obligatoria. Si no está adjunta: agregar a documentos_faltantes y marcar RECHAZADO.
-RECHAZADO si falta Autorización, DNI o Escritura. Si falta UIF y uif_en_escritura=false, también RECHAZADO.
+- Si dice explícitamente que la UIF se firma en escritura (frases como "la UIF se firma en escritura", "UIF en escritura", o similar): uif_en_escritura=true, NO es obligatoria para nadie, no advertir si falta, no cruzar.
+- Si dice que la UIF se firma en el momento, o no aclara nada: uif_en_escritura=false, ES obligatoria para cada persona según la regla de arriba.
+RECHAZADO si falta Autorización, Escritura, o el DNI de alguna persona obligada. Si falta el UIF de alguna persona obligada y uif_en_escritura=false, también RECHAZADO.
 
 Múltiples autorizaciones: si se presentan dos o más documentos de autorización firmados por separado (por ejemplo, cada heredero firma la suya), esto es CORRECTO. multiples_autorizaciones=true, tratarlos como un conjunto válido y cruzar los datos combinados.
 
@@ -193,6 +203,10 @@ Declaratoria de herederos (si está presente):
 Sin declaratoria: declaratoria_vs_escritura, declaratoria_vs_autorizacion y poder_habilita_firmante tienen aplica=false, ok=null, detalle="No aplica".
 nombre_autorizacion_vs_escritura: aplica=false (ok=null, detalle="Con declaratoria de herederos la escritura está a nombre del causante, no aplica") si hay declaratoria. Si NO hay declaratoria, aplica=true y verificar normalmente.
 Si uif_en_escritura=true: nombre_autorizacion_vs_uif y dni_autorizacion_vs_uif tienen aplica=false, ok=null, detalle="UIF se firma en escritura, no aplica".
+
+Cruces nombre_autorizacion_vs_dni y dni_autorizacion_vs_dni: buscá en el array "dnis" la entrada cuyo nombre coincida con firmante_nombre (el firmante real, quien firmó de puño y letra o electrónicamente) y compará contra ella. Si hay varios firmantes (multiples_autorizaciones=true), verificá que cada firmante tenga su entrada correspondiente en "dnis" y que los DNI coincidan; detallalo para cada uno.
+Cruces nombre_autorizacion_vs_uif y dni_autorizacion_vs_uif (cuando aplican): mismo criterio pero buscando en el array "uifs" la entrada del firmante.
+Estos cruces son sobre el/los firmante(s) de la autorización, no reemplazan la verificación de documentos_faltantes de TODOS los herederos obligados (que puede incluir personas que no firmaron por tener poder que las representa).
 
 M² declarados: NO son obligatorios en la autorización. Extraerlos con prioridad:
 1. Superficie explícita (superficie cubierta, sup. total, m², etc).
@@ -396,6 +410,28 @@ function App() {
                     <DC label="Matrícula RPI" value={r.escritura?.matricula_rpi} span/>
                   </div>
                 </div>
+
+                {(r.dnis||[]).length > 0 && (
+                  <div className="card">
+                    <div className="card__title">DNI presentados</div>
+                    <div className="datagrid">
+                      {r.dnis.flatMap((d,i) => [<DC key={"dn"+i} label="Nombre" value={d.nombre}/>, <DC key={"dd"+i} label="Número" value={d.numero}/>])}
+                    </div>
+                  </div>
+                )}
+
+                {(r.uifs||[]).length > 0 && (
+                  <div className="card">
+                    <div className="card__title">Formularios UIF presentados</div>
+                    <div className="datagrid">
+                      {r.uifs.flatMap((u,i) => [
+                        <DC key={"un"+i} label="Nombre" value={u.nombre}/>,
+                        <DC key={"ud"+i} label="DNI" value={u.dni}/>,
+                        <DC key={"up"+i} label="Declaración PEP" value={u.pep_completado ? (u.pep_resultado === "SI" ? "Completada — SÍ es PEP" : "Completada — No es PEP") : "No presentada"} span/>
+                      ])}
+                    </div>
+                  </div>
+                )}
 
                 {r.declaratoria?.encontrada && (
                   <div className="card">
