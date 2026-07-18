@@ -3,5 +3,10 @@
     "username": "IGROCCA",
     "passwordHash": "$2a$10$hOjl8ZltGnM6xQhjY436ye2Z04QrX3KLOMtcvgVtOOtEqRZhHNKle",
     "nombre": "Ignacio Rocca"
+  },
+  {
+    "username": "AOLIVERI",
+    "passwordHash": "$2a$10$KwL8pczeBQ8SeW5Ygq4S3uVbLm8HDArbRVD6.tlqYUXZ8ZRv6R4QG",
+    "nombre": "Andrea Oliveri"
   }
 ]
