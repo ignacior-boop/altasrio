@@ -1,5 +1,140 @@
 [
   {
+    "id": "mrqwn2bbm0pkug",
+    "fecha": "2026-07-18T21:54:37.559Z",
+    "agente": "ESTHEFANIE VASQUEZ",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Castro Barros 1310, Piso 4, Departamento B (UF 8)",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Departamento",
+        "direccion": "Castro Barros 1310, Piso 4, Departamento B (UF 8)",
+        "localidad": "Ciudad Autónoma de Buenos Aires"
+      },
+      "titulares": [
+        {
+          "nombre": "MARIA MERCEDES SIBEMHART",
+          "dni": "20618207"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "LOCACION",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "$650.000 por mes",
+        "fecha_firma": "18/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "02/01/2027",
+        "comision_porcentaje": "4,15% + IVA",
+        "direccion": "Castro Barros 1310, Piso 4, Ciudad Autónoma de Buenos Aires",
+        "firmante_nombre": "MARIA MERCEDES SIBEMHART",
+        "firmante_dni": "20618207"
+      },
+      "escritura": {
+        "requerida": false,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "MARIA MERCEDES SIBEMHART",
+            "dni": "20618207"
+          }
+        ],
+        "direccion": "Castro Barros 1310, Piso 4 (interno B), Ciudad Autónoma de Buenos Aires",
+        "m2_cubiertos": "37,55 m²",
+        "m2_semicubiertos": "0,69 m²",
+        "m2_descubiertos": "4,05 m² (balcón)",
+        "m2_totales": "42,29 m²",
+        "matricula_rpi": "Matrícula Digital 6-1603/0 GDE",
+        "sello_rpi": true
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "ESTHEFANIE VASQUEZ",
+        "agente_dni": "19124511"
+      },
+      "dnis": [
+        {
+          "nombre": "MARIA MERCEDES SIBEMHART",
+          "numero": "20618207"
+        }
+      ],
+      "uifs": [],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El firmante de la autorización (MARIA MERCEDES SIBEMHART) coincide con la titular en la escritura."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El nombre MARIA MERCEDES SIBEMHART en la autorización coincide con el del DNI adjunto."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": false,
+          "detalle": "No se adjuntó formulario UIF de MARIA MERCEDES SIBEMHART. La autorización indica que se firmará en la firma del contrato, pero no declara expresamente 'UIF en escritura'. La cláusula 7 indica que se firmarán en oportunidad de la firma del contrato de locación, liberando a la autorizada de responsabilidad. Se interpreta como aplazamiento válido pero el formulario aún no está presente."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El DNI 20618207 indicado en la autorización coincide con el número del DNI adjunto de MARIA MERCEDES SIBEMHART."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": false,
+          "detalle": "No se adjuntó formulario UIF de MARIA MERCEDES SIBEMHART, por lo que no es posible cruzar el DNI."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La dirección en la autorización (Castro Barros 1310, Piso 4) coincide con la escritura (Castro Barros 1310, piso 4°, interno B, UF 8, CABA)."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay poder notarial presentado."
+        }
+      },
+      "documentos_faltantes": [
+        "Formulario UIF de MARIA MERCEDES SIBEMHART"
+      ],
+      "alertas": [
+        "La cláusula 7 de la autorización establece que los formularios UIF (Resolución 43/2024) serán firmados en oportunidad de la firma del contrato de locación, liberando a la autorizada de responsabilidad por la omisión en esta etapa. El formulario UIF no está adjunto y deberá obtenerse antes de o al momento de la firma del contrato.",
+        "La autorización menciona 'Piso 4 Departamento' sin indicar la letra/número del departamento. La escritura lo identifica como interno B (UF 8). Verificar que la publicidad y el contrato incluyan la identificación completa de la unidad.",
+        "El DNI adjunto de MARIA MERCEDES SIBEMHART fue emitido en junio 2012 con vencimiento junio 2027: vigente a la fecha de la operación.",
+        "La escritura fue otorgada el 25/10/2021. La titular declaró en ese acto que destina la unidad a vivienda familiar única y de uso propio y ocupación permanente. Al ponerla en alquiler, ese destino cambia. No representa un impedimento legal para locar, pero se recomienda verificar si el reglamento de propiedad horizontal del edificio permite la locación sin restricciones (el reglamento no fue adjuntado)."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "mrqhoixkyehfur",
     "fecha": "2026-07-18T14:55:51.512Z",
     "agente": "ANDREA OLIVERI",
