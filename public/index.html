@@ -154,6 +154,7 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 .admin-nav-btn:hover { text-decoration: underline; }
 .gestion-back { background: none; border: none; color: var(--fg-muted); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 18px; display: inline-block; }
 .gestion-back:hover { color: var(--fg-strong); }
+.notice-strip { background: #EEF3FF; border: 1px solid #B9CBFF; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: var(--rm-blue-deep); font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .admin-wrap { max-width: 640px; margin: 0 auto; padding: 40px 20px 80px; }
 .admin-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-1); padding: 28px 32px; margin-bottom: 20px; }
 .admin-title { font-weight: 900; font-size: 18px; letter-spacing: -0.01em; color: var(--fg-strong); margin-bottom: 18px; text-transform: uppercase; }
@@ -662,6 +663,9 @@ function App() {
           </div>
           {!isAdminRoute && sessionNombre && (
             <div className="session-info">
+              {stage !== "upload" && (
+                <button className="admin-nav-btn" onClick={() => setStage("upload")}>Analizar</button>
+              )}
               {(sessionRol === "propietario" || sessionRol === "administrador") && (
                 <button className="admin-nav-btn" onClick={abrirGestion}>Usuarios</button>
               )}
@@ -827,6 +831,14 @@ function App() {
               <h1 className="page-title">Control de<br/>alta de publicación</h1>
               <p className="page-lede">Subí la documentación de la propiedad y verificá en segundos si está en condiciones para dar el alta. Cruce automático de datos entre autorización, DNI, UIF y escritura.</p>
 
+              {result && (
+                <button className="gestion-back" onClick={() => setStage("report")}>&larr; Volver al informe sin agregar documentación</button>
+              )}
+
+              {result && (
+                <div className="notice-strip">ℹ Agregando documentación a un análisis ya hecho{result.inmueble?.direccion ? ` (${result.inmueble.direccion})` : ""}. Al analizar se genera un informe actualizado con todos los documentos, los nuevos y los que ya estaban cargados.</div>
+              )}
+
               {error && <div className="errbox">⚠ {error}</div>}
 
               <div className={`dropzone${drag ? " drag" : ""}`}
@@ -845,7 +857,7 @@ function App() {
                   <button onClick={e => { e.stopPropagation(); removeFile(f.name); }}>×</button></span>)}
               </div>}
 
-              <button className="btn btn-primary" disabled={!files.length} onClick={analyze}>Analizar documentación</button>
+              <button className="btn btn-primary" disabled={!files.length} onClick={analyze}>{result ? "Volver a analizar con la documentación actualizada" : "Analizar documentación"}</button>
             </div>
           )}
 
@@ -993,6 +1005,7 @@ function App() {
                   </div>
                 )}
 
+                <button className="btn btn-primary" onClick={() => setStage("upload")}>+ Agregar más documentación a este análisis</button>
                 <button className="btn btn-ghost" onClick={() => { setStage("upload"); setResult(null); setFiles([]); }}>← Analizar otra propiedad</button>
               </div>
             );
