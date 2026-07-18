@@ -73,6 +73,7 @@ app.post("/api/historial", async (req, res) => {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
       fecha: new Date().toISOString(),
       agente: req.body.agente || null,
+      cargado_por: req.body.cargado_por || null,
       direccion: req.body.direccion || null,
       veredicto: req.body.veredicto || null,
       resultado: req.body.resultado || null
