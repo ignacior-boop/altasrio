@@ -142,17 +142,21 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
   "inmueble": { "tipo": string, "direccion": string, "localidad": string },
   "titulares": [{ "nombre": string, "dni": string }],
   "autorizacion": {
-    "encontrada": boolean, "multiples_autorizaciones": boolean, "uif_en_escritura": boolean,
+    "encontrada": boolean, "tipo_operacion": "VENTA" or "LOCACION", "multiples_autorizaciones": boolean, "uif_en_escritura": boolean,
+    "valor_autorizado": string or null,
     "fecha_firma": "DD/MM/YYYY" or null, "plazo_dias_habiles": number or null,
     "fecha_vencimiento_calculada": "DD/MM/YYYY" or null, "comision_porcentaje": string or null,
     "direccion": string or null,
     "firmante_nombre": string or null, "firmante_dni": string or null
   },
   "escritura": {
-    "encontrada": boolean, "titulares": [{ "nombre": string, "dni": string or null }],
+    "requerida": boolean, "encontrada": boolean, "titulares": [{ "nombre": string, "dni": string or null }],
     "direccion": string or null, "m2_cubiertos": string or null, "m2_semicubiertos": string or null,
     "m2_descubiertos": string or null, "m2_totales": string or null,
     "matricula_rpi": string or null, "sello_rpi": boolean
+  },
+  "reglamento_copropiedad": {
+    "encontrado": boolean, "permite_uso_profesional": boolean or null, "permite_uso_comercial": boolean or null, "detalle": string or null
   },
   "dnis": [{ "nombre": string, "numero": string or null }],
   "uifs": [{ "nombre": string, "dni": string or null, "pep_completado": boolean, "pep_resultado": "SI" or "NO" or null }],
@@ -174,32 +178,36 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
 }
 
 REGLAS CRÍTICAS:
-Documentos obligatorios siempre: Autorización, Escritura.
+
+TIPO DE OPERACIÓN: Determiná "tipo_operacion" leyendo la Autorización. VENTA si dice "autorización de venta", "vender", "venta del inmueble", o similar. LOCACION si dice "autorización de locación", "alquiler", "arrendamiento", "locar", "canon locativo", o similar. Usá este valor para adaptar la terminología del análisis.
+
+Documentos obligatorios: Autorización, siempre. Escritura: OBLIGATORIA solo si tipo_operacion=VENTA (en ese caso escritura.requerida=true). Si tipo_operacion=LOCACION, escritura.requerida=false: la Escritura NO es obligatoria y aunque no esté presente, NO debe agregarse a "documentos_faltantes". Si de todos modos se adjuntó una Escritura en una locación, usala igual para verificar titularidad y m².
 
 PERSONAS QUE DEBEN ACREDITAR IDENTIDAD (muy importante, leer con atención):
 - Si NO hay declaratoria de herederos: la(s) persona(s) obligada(s) son los titulares que firman la autorización.
-- Si HAY declaratoria de herederos: la persona obligada es CADA heredero que figure como autorizante en la autorización de venta (no solo quien firmó de puño y letra), salvo que exista poder notarial que habilite a uno a representar a otro (en ese caso el representado no necesita presentar DNI/UIF propio, pero si igual los presentó, informalos también).
+- Si HAY declaratoria de herederos: la persona obligada es CADA heredero que figure como autorizante en la autorización (no solo quien firmó de puño y letra), salvo que exista poder notarial que habilite a uno a representar a otro (en ese caso el representado no necesita presentar DNI/UIF propio, pero si igual los presentó, informalos también).
 Para cada una de esas personas debe existir:
   a) Un DNI propio: una entrada en el array "dnis" cuyo nombre coincida con esa persona (ignorá tildes, mayúsculas/minúsculas, orden nombre-apellido y pequeñas variantes de escritura al comparar nombres — son la misma persona si el nombre y apellido coinciden).
   b) Si uif_en_escritura=false: un formulario UIF propio: una entrada en el array "uifs" cuyo nombre coincida con esa persona.
 Antes de agregar algo a "documentos_faltantes", revisá CUIDADOSAMENTE los arrays "dnis" y "uifs" completos (pueden venir de PDFs separados, o varias personas pueden estar en el mismo PDF) buscando una coincidencia de nombre. Un documento de identidad puede tener frente y dorso en el mismo PDF o en PDFs distintos: no lo cuentes dos veces ni lo declares faltante si ya aparece. Solo marcá como faltante el DNI o UIF de una persona si, tras revisar TODOS los documentos adjuntos, genuinamente no hay ninguna entrada con su nombre.
 Cada DNI o UIF faltante debe listarse en "documentos_faltantes" mencionando el nombre completo de la persona a la que le falta (ej: "DNI de JUAN PÉREZ", "Formulario UIF de JUAN PÉREZ").
 
-UIF: revisar qué indica la autorización de venta:
+UIF: revisar qué indica la autorización:
 - Si dice explícitamente que la UIF se firma en escritura (frases como "la UIF se firma en escritura", "UIF en escritura", o similar): uif_en_escritura=true, NO es obligatoria para nadie, no advertir si falta, no cruzar.
 - Si dice que la UIF se firma en el momento, o no aclara nada: uif_en_escritura=false, ES obligatoria para cada persona según la regla de arriba.
-RECHAZADO si falta Autorización, Escritura, o el DNI de alguna persona obligada. Si falta el UIF de alguna persona obligada y uif_en_escritura=false, también RECHAZADO.
+RECHAZADO si falta la Autorización, o (cuando escritura.requerida=true) falta la Escritura, o el DNI de alguna persona obligada. Si falta el UIF de alguna persona obligada y uif_en_escritura=false, también RECHAZADO.
 
 Múltiples autorizaciones: si se presentan dos o más documentos de autorización firmados por separado (por ejemplo, cada heredero firma la suya), esto es CORRECTO. multiples_autorizaciones=true, tratarlos como un conjunto válido y cruzar los datos combinados.
 
 Declaratoria de herederos (si está presente):
-- Verificar que TODOS los herederos listados en la declaratoria aparezcan como titulares en la escritura.
-- Verificar que TODOS los herederos aparezcan como firmantes en la autorización de venta, SALVO que haya un poder notarial que habilite a uno a firmar en representación del resto.
+- Verificar que TODOS los herederos listados en la declaratoria aparezcan como titulares en la escritura (si hay escritura presentada).
+- Verificar que TODOS los herederos aparezcan como firmantes en la autorización, SALVO que haya un poder notarial que habilite a uno a firmar en representación del resto.
 - Si hay poder: verificar que el apoderado que firma la autorización coincida con el apoderado designado en el poder, y que el poderdante coincida con los herederos.
-- declaratoria_vs_escritura.aplica=true y declaratoria_vs_autorizacion.aplica=true si hay declaratoria; poder_habilita_firmante.aplica=true si hay poder.
+- declaratoria_vs_escritura.aplica=true (si hay escritura) y declaratoria_vs_autorizacion.aplica=true si hay declaratoria; poder_habilita_firmante.aplica=true si hay poder.
 
 Sin declaratoria: declaratoria_vs_escritura, declaratoria_vs_autorizacion y poder_habilita_firmante tienen aplica=false, ok=null, detalle="No aplica".
-nombre_autorizacion_vs_escritura: aplica=false (ok=null, detalle="Con declaratoria de herederos la escritura está a nombre del causante, no aplica") si hay declaratoria. Si NO hay declaratoria, aplica=true y verificar normalmente.
+Cruces que involucran a la Escritura (nombre_autorizacion_vs_escritura, direccion_autorizacion_vs_escritura, declaratoria_vs_escritura): aplica=false, ok=null, detalle="Escritura no presentada, no aplica" si escritura.encontrada=false (típico en una locación sin escritura adjunta).
+nombre_autorizacion_vs_escritura: además, aplica=false (ok=null, detalle="Con declaratoria de herederos la escritura está a nombre del causante, no aplica") si hay declaratoria. Si NO hay declaratoria y hay escritura, aplica=true y verificar normalmente.
 Si uif_en_escritura=true: nombre_autorizacion_vs_uif y dni_autorizacion_vs_uif tienen aplica=false, ok=null, detalle="UIF se firma en escritura, no aplica".
 
 Cruces nombre_autorizacion_vs_dni y dni_autorizacion_vs_dni: buscá en el array "dnis" la entrada cuyo nombre coincida con firmante_nombre (el firmante real, quien firmó de puño y letra o electrónicamente) y compará contra ella. Si hay varios firmantes (multiples_autorizaciones=true), verificá que cada firmante tenga su entrada correspondiente en "dnis" y que los DNI coincidan; detallalo para cada uno.
@@ -207,16 +215,21 @@ Cruces nombre_autorizacion_vs_uif y dni_autorizacion_vs_uif (cuando aplican): mi
 Estos cruces son sobre el/los firmante(s) de la autorización, no reemplazan la verificación de documentos_faltantes de TODOS los herederos obligados (que puede incluir personas que no firmaron por tener poder que las representa).
 
 FIRMAS ELECTRÓNICAS (Contractia u otra plataforma similar): Muchos documentos incluyen, además de las firmas manuscritas, una página final "Detalle de Firmas" de una plataforma de firma electrónica, con Nombre, Email, Fecha y Código de firma de cada firmante electrónico. Estos documentos suelen tener en el encabezado de CADA página la leyenda "Documento firmado electrónicamente en [plataforma] el [fecha] con Código de Auditoría: [código]".
-Regla: si ese mismo Código de Auditoría aparece en el encabezado de TODAS las páginas del PDF (incluidas las páginas de la Autorización de Venta en sí, no solo la última hoja de detalle de firmas o un certificado anexo), la firma electrónica de esa persona es válida para la TOTALIDAD del documento, con el mismo efecto que una firma de puño y letra. Tratá a esa persona como firmante pleno de la autorización.
+Regla: si ese mismo Código de Auditoría aparece en el encabezado de TODAS las páginas del PDF (incluidas las páginas de la Autorización en sí, no solo la última hoja de detalle de firmas o un certificado anexo), la firma electrónica de esa persona es válida para la TOTALIDAD del documento, con el mismo efecto que una firma de puño y letra. Tratá a esa persona como firmante pleno de la autorización.
 En ese caso: multiples_autorizaciones puede ser true (manuscrita + electrónica combinadas son válidas como conjunto), declaratoria_vs_autorizacion.ok=true si todos los herederos firmaron (de puño y letra o electrónicamente, indistintamente), y NO generes alertas de duda tipo "falta confirmar si la firma electrónica corresponde a la Autorización o solo a otro anexo" cuando el código de auditoría del encabezado es idéntico en todas las páginas del PDF — eso ya lo confirma. Solo marcá ok=false o generá alerta si el código de auditoría de la página de detalle de firmas NO coincide con el de las páginas de la Autorización (indicio de que la firma electrónica pertenece a un documento distinto).
 
-M² declarados: NO se extraen ni se verifican en la Autorización de Venta (no es un dato obligatorio ahí y no se cruza). Extraé los m² ÚNICAMENTE de la Escritura, con esta prioridad:
+M² declarados: NO se extraen ni se verifican en la Autorización (no es un dato obligatorio ahí y no se cruza). Si hay Escritura presentada, extraé los m² ÚNICAMENTE de ahí, con esta prioridad:
 1. Superficie explícita (superficie cubierta, sup. total, m², etc).
 2. Si no hay, buscar medidas de frente y fondo (en números o letras), convertir a metros y multiplicar frente×fondo. Indicar ej: "~487 m² (calculado frente×fondo)".
 3. Si no se pueden determinar, null y alerta "M² no encontrados en escritura, verificar manualmente".
+Si NO hay Escritura presentada (por ejemplo, en una locación sin escritura adjunta), dejá los campos de m² en null y NO generes ninguna alerta al respecto — no es un dato disponible ni obligatorio en ese caso.
 NO confundir m² con números de matrícula, partida, nomenclatura catastral, folio, tomo o inscripción RPI.
 No generes ningún cruce ni alerta comparando m² de la autorización contra la escritura.
 Cédula catastral: NO es requerida. No mencionarla en documentos_faltantes.
+
+VALOR AUTORIZADO: extraé de la Autorización el monto/precio autorizado tal como figura en el texto, con moneda incluida (ej: "USD 150.000", "$ 450.000 por mes", "U$S 120.000"). Si el documento no menciona un valor, dejalo en null.
+
+REGLAMENTO DE COPROPIEDAD (opcional, solo si se adjunta): buscá cláusulas sobre el destino/uso permitido de la unidad (vivienda, profesional, comercial, mixto, u otro). reglamento_copropiedad.encontrado=true si el documento fue adjuntado. permite_uso_profesional y permite_uso_comercial: true/false según lo que indique el reglamento, o null si no lo aclara explícitamente. detalle: citá brevemente la cláusula relevante. Si el Reglamento NO fue adjuntado, reglamento_copropiedad.encontrado=false y dejá los demás campos en null; esto NUNCA es un documento obligatorio — no lo agregues a "documentos_faltantes" ni generes alerta por su ausencia.
 
 fecha_vencimiento_calculada: sumá plazo_dias_habiles a fecha_firma contando solo días hábiles (lun-vie), excluyendo feriados de Argentina 2025-2026: 2026-06-15, 2026-06-20, 2026-07-09, 2026-07-10, 2026-08-17, 2026-10-12, 2026-11-23, 2026-12-07, 2026-12-08, 2026-12-25.
 
@@ -375,12 +388,13 @@ function App() {
                 </div>
 
                 <div className="card">
-                  <div className="card__title">Autorización de Venta</div>
+                  <div className="card__title">{r.autorizacion?.tipo_operacion === "LOCACION" ? "Autorización de Locación" : "Autorización de Venta"}</div>
                   <div className="datagrid">
                     <DC label="Fecha de firma" value={r.autorizacion?.fecha_firma}/>
                     <DC label="Plazo" value={r.autorizacion?.plazo_dias_habiles ? r.autorizacion.plazo_dias_habiles + " días hábiles" : null}/>
                     <DC label="Vencimiento" value={r.autorizacion?.fecha_vencimiento_calculada}/>
                     <DC label="Comisión" value={r.autorizacion?.comision_porcentaje}/>
+                    <DC label={r.autorizacion?.tipo_operacion === "LOCACION" ? "Valor de alquiler autorizado" : "Valor de venta autorizado"} value={r.autorizacion?.valor_autorizado} span/>
                     <DC label="Dirección" value={r.autorizacion?.direccion} span/>
                     {r.autorizacion?.firmante_nombre && <>
                       <DC label="Firmante" value={r.autorizacion.firmante_nombre}/>
@@ -391,21 +405,34 @@ function App() {
                   </div>
                 </div>
 
-                <div className="card">
-                  <div className="card__title">Escritura</div>
-                  <div className="datagrid">
-                    {(r.escritura?.titulares||[]).flatMap((t,i) => [
-                      <DC key={"en"+i} label={"Titular" + (r.escritura.titulares.length>1 ? " "+(i+1) : "")} value={t.nombre}/>,
-                      <DC key={"ed"+i} label="DNI" value={t.dni}/>])}
-                    <DC label="M² Cubiertos" value={r.escritura?.m2_cubiertos}/>
-                    <DC label="M² Totales" value={r.escritura?.m2_totales}/>
-                    {(r.escritura?.m2_semicubiertos || r.escritura?.m2_descubiertos) && <>
-                      <DC label="M² Semicubiertos" value={r.escritura?.m2_semicubiertos}/>
-                      <DC label="M² Descubiertos" value={r.escritura?.m2_descubiertos}/>
-                    </>}
-                    <DC label="Matrícula RPI" value={r.escritura?.matricula_rpi} span/>
+                {(r.escritura?.requerida || r.escritura?.encontrada) && (
+                  <div className="card">
+                    <div className="card__title">Escritura</div>
+                    <div className="datagrid">
+                      {(r.escritura?.titulares||[]).flatMap((t,i) => [
+                        <DC key={"en"+i} label={"Titular" + (r.escritura.titulares.length>1 ? " "+(i+1) : "")} value={t.nombre}/>,
+                        <DC key={"ed"+i} label="DNI" value={t.dni}/>])}
+                      <DC label="M² Cubiertos" value={r.escritura?.m2_cubiertos}/>
+                      <DC label="M² Totales" value={r.escritura?.m2_totales}/>
+                      {(r.escritura?.m2_semicubiertos || r.escritura?.m2_descubiertos) && <>
+                        <DC label="M² Semicubiertos" value={r.escritura?.m2_semicubiertos}/>
+                        <DC label="M² Descubiertos" value={r.escritura?.m2_descubiertos}/>
+                      </>}
+                      <DC label="Matrícula RPI" value={r.escritura?.matricula_rpi} span/>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {r.reglamento_copropiedad?.encontrado && (
+                  <div className="card">
+                    <div className="card__title">Reglamento de Copropiedad</div>
+                    <div className="datagrid">
+                      <DC label="Uso profesional" value={r.reglamento_copropiedad?.permite_uso_profesional === true ? "Permitido" : r.reglamento_copropiedad?.permite_uso_profesional === false ? "No permitido" : "No especificado"}/>
+                      <DC label="Uso comercial" value={r.reglamento_copropiedad?.permite_uso_comercial === true ? "Permitido" : r.reglamento_copropiedad?.permite_uso_comercial === false ? "No permitido" : "No especificado"}/>
+                      {r.reglamento_copropiedad?.detalle && <DC label="Detalle" value={r.reglamento_copropiedad.detalle} span/>}
+                    </div>
+                  </div>
+                )}
 
                 {(r.dnis||[]).length > 0 && (
                   <div className="card">
