@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "username": "IGROCCA",
+    "passwordHash": "$2a$10$hOjl8ZltGnM6xQhjY436ye2Z04QrX3KLOMtcvgVtOOtEqRZhHNKle",
+    "nombre": "Ignacio Rocca"
+  }
+]
