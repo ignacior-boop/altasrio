@@ -42,8 +42,12 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .site-header { position: sticky; top: 0; z-index: 50; background: rgba(247,245,238,0.92); backdrop-filter: saturate(140%) blur(10px); border-bottom: 1px solid var(--border); }
 .site-header__inner { max-width: 1000px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; gap: 14px; height: 72px; }
-.brand-lockup { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 20px; letter-spacing: -0.02em; color: var(--fg-strong); }
-.brand-badge { background: var(--rm-red); color: #fff; font-weight: 900; font-size: 15px; padding: 4px 10px; border-radius: 3px; letter-spacing: 0.02em; }
+.brand-logo { display: flex; align-items: center; gap: 10px; }
+.brand-logo__left { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.brand-logo__left svg { width: 26px; height: 26px; display: block; }
+.brand-logo__rio { font-size: 10px; font-weight: 700; letter-spacing: 0.03em; color: var(--fg-strong); line-height: 1; }
+.brand-logo__remax { font-weight: 900; font-size: 25px; letter-spacing: -0.03em; color: var(--fg-strong); line-height: 1; white-space: nowrap; }
+.brand-logo__remax sup { font-size: 10px; font-weight: 700; }
 .brand-sub { font-size: 13px; font-weight: 600; color: var(--fg-muted); }
 .container { max-width: 1000px; margin: 0 auto; padding: 0 32px; }
 .main-wrap { padding: 40px 0 80px; }
@@ -121,6 +125,7 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 .historial-item__info { overflow: hidden; }
 .historial-item__agente { font-weight: 700; font-size: 13px; color: var(--fg-strong); overflow: hidden; text-overflow: ellipsis; }
 .historial-item__direccion { font-size: 12px; color: var(--fg-muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
+.historial-item__cargado { font-size: 10.5px; color: var(--fg-muted); opacity: 0.75; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; }
 .verdict-pill { flex-shrink: 0; font-size: 10px; font-weight: 800; padding: 4px 9px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.03em; }
 .verdict-pill.APTO { background: var(--ok-bg); color: var(--ok); }
 .verdict-pill.OBSERVADO { background: var(--warn-bg); color: var(--warn); }
@@ -177,6 +182,9 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
   },
   "reglamento_copropiedad": {
     "encontrado": boolean, "permite_uso_profesional": boolean or null, "permite_uso_comercial": boolean or null, "detalle": string or null
+  },
+  "certificado_servicios": {
+    "encontrado": boolean, "agente_nombre": string or null, "agente_dni": string or null
   },
   "dnis": [{ "nombre": string, "numero": string or null }],
   "uifs": [{ "nombre": string, "dni": string or null, "pep_completado": boolean, "pep_resultado": "SI" or "NO" or null }],
@@ -249,6 +257,8 @@ Cédula catastral: NO es requerida. No mencionarla en documentos_faltantes.
 
 VALOR AUTORIZADO: extraé de la Autorización el monto/precio autorizado tal como figura en el texto, con moneda incluida (ej: "USD 150.000", "$ 450.000 por mes", "U$S 120.000"). Si el documento no menciona un valor, dejalo en null.
 
+CERTIFICADO DE GARANTÍA DE SERVICIOS PROFESIONALES: este documento suele estar al final de la Autorización (o como anexo). Ahí figura el nombre del agente inmobiliario de RE/MAX responsable de la operación (quien brinda el servicio, no el titular ni el comprador/vendedor). Extraé su nombre completo tal como figura en certificado_servicios.agente_nombre, y su DNI en agente_dni si está impreso ahí (dejalo null si no figura). certificado_servicios.encontrado=true si ese certificado está presente en algún documento adjunto (aunque sea como página final de la Autorización). Si no se encuentra en ningún documento, encontrado=false y agente_nombre/agente_dni en null. Este campo es solo informativo, no es un documento obligatorio ni se cruza con nada ni genera alertas por su ausencia.
+
 REGLAMENTO DE COPROPIEDAD (opcional, solo si se adjunta): buscá cláusulas sobre el destino/uso permitido de la unidad (vivienda, profesional, comercial, mixto, u otro). reglamento_copropiedad.encontrado=true si el documento fue adjuntado. permite_uso_profesional y permite_uso_comercial: true/false según lo que indique el reglamento, o null si no lo aclara explícitamente. detalle: citá brevemente la cláusula relevante. Si el Reglamento NO fue adjuntado, reglamento_copropiedad.encontrado=false y dejá los demás campos en null; esto NUNCA es un documento obligatorio — no lo agregues a "documentos_faltantes" ni generes alerta por su ausencia.
 
 fecha_vencimiento_calculada: sumá plazo_dias_habiles a fecha_firma contando solo días hábiles (lun-vie), excluyendo feriados de Argentina 2025-2026: 2026-06-15, 2026-06-20, 2026-07-09, 2026-07-10, 2026-08-17, 2026-10-12, 2026-11-23, 2026-12-07, 2026-12-08, 2026-12-25.
@@ -313,7 +323,8 @@ function App() {
   async function guardarEnHistorial(parsed) {
     try {
       const body = {
-        agente: agentName || null,
+        agente: parsed.certificado_servicios?.agente_nombre || null,
+        cargado_por: agentName || null,
         direccion: parsed.inmueble?.direccion || null,
         veredicto: parsed.veredicto || null,
         resultado: parsed
@@ -387,6 +398,7 @@ function App() {
               <div className="historial-item__info">
                 <div className="historial-item__agente">{item.agente || "Sin agente"}</div>
                 <div className="historial-item__direccion">{item.direccion || "Sin dirección"}</div>
+                {item.cargado_por && <div className="historial-item__cargado">Cargado por {item.cargado_por}</div>}
               </div>
               <span className={`verdict-pill ${item.veredicto || "OBSERVADO"}`}>{item.veredicto || "—"}</span>
             </div>
@@ -396,7 +408,23 @@ function App() {
 
       <header className="site-header">
         <div className="site-header__inner">
-          <div className="brand-lockup"><span className="brand-badge">RE/MAX</span> Río</div>
+          <div className="brand-logo">
+            <div className="brand-logo__left">
+              <svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <clipPath id="pinClip"><path d="M35,2 C18,2 4,16 4,33 C4,52 35,68 35,68 C35,68 66,52 66,33 C66,16 52,2 35,2 Z"/></clipPath>
+                </defs>
+                <g clipPath="url(#pinClip)">
+                  <rect x="0" y="0" width="35" height="38" fill="#7A0C10"/>
+                  <rect x="35" y="0" width="35" height="38" fill="#FF1200"/>
+                  <rect x="0" y="38" width="70" height="8" fill="#F7F5EE"/>
+                  <rect x="0" y="46" width="70" height="26" fill="#0043FF"/>
+                </g>
+              </svg>
+              <div className="brand-logo__rio">RIO</div>
+            </div>
+            <div className="brand-logo__remax">RE/MAX<sup>®</sup></div>
+          </div>
           <span className="brand-sub">· Control de Alta de Publicación</span>
         </div>
       </header>
@@ -411,7 +439,7 @@ function App() {
               <p className="page-lede">Subí la documentación de la propiedad y verificá en segundos si está en condiciones para dar el alta. Cruce automático de datos entre autorización, DNI, UIF y escritura.</p>
 
               <div className="agent-field">
-                <label className="agent-field__label">Nombre del agente</label>
+                <label className="agent-field__label">Tu nombre (quien carga este análisis)</label>
                 <input className="agent-field__input" type="text" value={agentName} onChange={e => updateAgentName(e.target.value)} placeholder="Tu nombre y apellido" />
               </div>
 
