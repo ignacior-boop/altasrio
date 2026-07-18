@@ -105,12 +105,32 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
   .datacell { border-right: none; }
   .container { padding: 0 20px; }
 }
+.agent-field { margin-bottom: 24px; max-width: 320px; }
+.agent-field__label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-muted); margin-bottom: 6px; }
+.agent-field__input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 14px; color: var(--fg-strong); background: #fff; }
+.agent-field__input:focus { outline: none; border-color: var(--rm-blue); }
+.historial-zone { position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; display: flex; }
+.historial-edge { width: 18px; height: 100%; background: rgba(0,14,53,0.07); display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; text-orientation: mixed; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; color: var(--fg-muted); cursor: pointer; transition: background .15s var(--ease-out); }
+.historial-edge:hover { background: rgba(0,14,53,0.12); }
+.historial-panel { width: 0; overflow: hidden; background: #fff; box-shadow: var(--shadow-3); height: 100%; overflow-y: auto; transition: width .22s var(--ease-out); }
+.historial-panel.open { width: 320px; }
+.historial-panel__title { padding: 16px 18px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rm-blue-deep); background: var(--surface-muted); border-bottom: 1px solid var(--border); white-space: nowrap; position: sticky; top: 0; }
+.historial-empty { padding: 20px 18px; font-size: 13px; color: var(--fg-muted); white-space: nowrap; }
+.historial-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--border); cursor: pointer; white-space: nowrap; }
+.historial-item:hover { background: var(--surface-muted); }
+.historial-item__info { overflow: hidden; }
+.historial-item__agente { font-weight: 700; font-size: 13px; color: var(--fg-strong); overflow: hidden; text-overflow: ellipsis; }
+.historial-item__direccion { font-size: 12px; color: var(--fg-muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
+.verdict-pill { flex-shrink: 0; font-size: 10px; font-weight: 800; padding: 4px 9px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.03em; }
+.verdict-pill.APTO { background: var(--ok-bg); color: var(--ok); }
+.verdict-pill.OBSERVADO { background: var(--warn-bg); color: var(--warn); }
+.verdict-pill.RECHAZADO { background: var(--err-bg); color: var(--err); }
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useRef } = React;
+const { useState, useRef, useEffect } = React;
 
 const FERIADOS = new Set([
   "2025-01-01","2025-02-03","2025-02-04","2025-03-24","2025-04-02","2025-04-17","2025-04-18","2025-05-01","2025-05-25","2025-06-16","2025-06-20","2025-07-09","2025-08-17","2025-10-12","2025-11-20","2025-11-21","2025-12-08","2025-12-25",
@@ -261,7 +281,19 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [drag, setDrag] = useState(false);
+  const [agentName, setAgentName] = useState(() => localStorage.getItem("rm_agente") || "");
+  const [historial, setHistorial] = useState([]);
+  const [histOpen, setHistOpen] = useState(false);
   const inputRef = useRef();
+
+  useEffect(() => {
+    fetch("/api/historial").then(r => r.json()).then(d => setHistorial(d.items || [])).catch(() => {});
+  }, []);
+
+  function updateAgentName(v) {
+    setAgentName(v);
+    localStorage.setItem("rm_agente", v);
+  }
 
   function addFiles(list) {
     const pdfs = [...list].filter(f => f.type === "application/pdf");
@@ -271,6 +303,32 @@ function App() {
     });
   }
   function removeFile(name) { setFiles(prev => prev.filter(f => f.name !== name)); }
+
+  function abrirHistorialItem(item) {
+    setResult(item.resultado);
+    setStage("report");
+    setHistOpen(false);
+  }
+
+  async function guardarEnHistorial(parsed) {
+    try {
+      const body = {
+        agente: agentName || null,
+        direccion: parsed.inmueble?.direccion || null,
+        veredicto: parsed.veredicto || null,
+        resultado: parsed
+      };
+      const res = await fetch("/api/historial", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.entry) setHistorial(prev => [data.entry, ...prev]);
+    } catch (e) {
+      // No bloquear el informe si falla el guardado del historial
+    }
+  }
 
   async function analyze() {
     setStage("loading"); setError(null);
@@ -292,8 +350,10 @@ function App() {
       const raw = data.content.map(i => i.text || "").join("").replace(/```json|```/g, "").trim();
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error("No se encontró JSON en la respuesta");
-      setResult(JSON.parse(jsonMatch[0]));
+      const parsed = JSON.parse(jsonMatch[0]);
+      setResult(parsed);
       setStage("report");
+      guardarEnHistorial(parsed);
     } catch (e) {
       setError(e.message);
       setStage("upload");
@@ -317,6 +377,23 @@ function App() {
 
   return (
     <div>
+      <div className="historial-zone" onMouseEnter={() => setHistOpen(true)} onMouseLeave={() => setHistOpen(false)}>
+        <div className="historial-edge">HISTORIAL</div>
+        <div className={`historial-panel${histOpen ? " open" : ""}`}>
+          <div className="historial-panel__title">Historial de análisis</div>
+          {historial.length === 0 && <div className="historial-empty">Todavía no hay análisis guardados</div>}
+          {historial.map(item => (
+            <div key={item.id} className="historial-item" onClick={() => abrirHistorialItem(item)}>
+              <div className="historial-item__info">
+                <div className="historial-item__agente">{item.agente || "Sin agente"}</div>
+                <div className="historial-item__direccion">{item.direccion || "Sin dirección"}</div>
+              </div>
+              <span className={`verdict-pill ${item.veredicto || "OBSERVADO"}`}>{item.veredicto || "—"}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <header className="site-header">
         <div className="site-header__inner">
           <div className="brand-lockup"><span className="brand-badge">RE/MAX</span> Río</div>
@@ -332,6 +409,11 @@ function App() {
               <div className="eyebrow">Back office</div>
               <h1 className="page-title">Control de<br/>alta de publicación</h1>
               <p className="page-lede">Subí la documentación de la propiedad y verificá en segundos si está en condiciones para dar el alta. Cruce automático de datos entre autorización, DNI, UIF y escritura.</p>
+
+              <div className="agent-field">
+                <label className="agent-field__label">Nombre del agente</label>
+                <input className="agent-field__input" type="text" value={agentName} onChange={e => updateAgentName(e.target.value)} placeholder="Tu nombre y apellido" />
+              </div>
 
               {error && <div className="errbox">⚠ {error}</div>}
 
