@@ -24,8 +24,10 @@ const SESSION_SECRET = process.env.SESSION_SECRET || (() => {
   return crypto.randomBytes(32).toString("hex");
 })();
 
+const ROLES_VALIDOS = ["propietario", "administrador", "staff"];
+
 // --- Historial de análisis (persistido como un archivo JSON en el repo de GitHub,
-// para que sea compartido entre todos los agentes y no se pierda con los reinicios/redeploys de Render) ---
+// para que sea compartido entre todos los usuarios y no se pierda con los reinicios/redeploys de Render) ---
 async function leerHistorialDeGitHub() {
   const r = await fetch(GITHUB_API, {
     headers: {
@@ -42,7 +44,7 @@ async function leerHistorialDeGitHub() {
   return { items, sha: data.sha };
 }
 
-// --- Usuarios (agentes) autenticados, también persistidos en el repo de GitHub ---
+// --- Usuarios autenticados, también persistidos en el repo de GitHub ---
 async function leerUsuariosDeGitHub() {
   const r = await fetch(USERS_API, {
     headers: {
@@ -73,6 +75,14 @@ async function escribirUsuariosDeGitHub(usuarios, sha, mensaje) {
   if (!putRes.ok) throw new Error(`GitHub API ${putRes.status}: ${await putRes.text()}`);
 }
 
+// Un usuario con rol "administrador" puede gestionar a cualquiera excepto a los "propietario".
+// Un "propietario" puede gestionar a cualquiera, incluido a sí mismo y a otros propietarios.
+function puedeGestionar(actorRol, targetRol) {
+  if (actorRol === "propietario") return true;
+  if (actorRol === "administrador") return (targetRol || "staff") !== "propietario";
+  return false;
+}
+
 function requireAuth(req, res, next) {
   const token = req.cookies?.rm_session;
   if (!token) return res.status(401).json({ error: "No autenticado" });
@@ -82,6 +92,14 @@ function requireAuth(req, res, next) {
   } catch (e) {
     res.status(401).json({ error: "Sesión inválida o expirada" });
   }
+}
+
+function requireGestion(req, res, next) {
+  const rol = req.user && req.user.rol;
+  if (rol !== "propietario" && rol !== "administrador") {
+    return res.status(403).json({ error: "No tenés permisos para gestionar usuarios" });
+  }
+  next();
 }
 
 function requireAdmin(req, res, next) {
@@ -101,9 +119,10 @@ app.post("/api/login", async (req, res) => {
     if (!u || !bcrypt.compareSync(password, u.passwordHash)) {
       return res.status(401).json({ error: "Usuario o contraseña incorrectos" });
     }
-    const token = jwt.sign({ username: u.username, nombre: u.nombre }, SESSION_SECRET, { expiresIn: "30d" });
+    const rol = ROLES_VALIDOS.includes(u.rol) ? u.rol : "staff";
+    const token = jwt.sign({ username: u.username, nombre: u.nombre, rol }, SESSION_SECRET, { expiresIn: "30d" });
     res.cookie("rm_session", token, { httpOnly: true, sameSite: "lax", secure: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
-    res.json({ ok: true, nombre: u.nombre });
+    res.json({ ok: true, nombre: u.nombre, rol });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -119,17 +138,94 @@ app.get("/api/me", (req, res) => {
   if (!token) return res.json({ nombre: null });
   try {
     const payload = jwt.verify(token, SESSION_SECRET);
-    res.json({ nombre: payload.nombre });
+    res.json({ nombre: payload.nombre, rol: payload.rol || "staff", username: payload.username });
   } catch {
     res.json({ nombre: null });
   }
 });
 
-// --- Administración de agentes (protegida por ADMIN_PASSWORD, independiente de las cuentas de agentes) ---
+// --- Gestión de usuarios dentro de la app, para sesiones con rol Propietario/Administrador ---
+app.get("/api/usuarios", requireAuth, requireGestion, async (req, res) => {
+  try {
+    const { usuarios } = await leerUsuariosDeGitHub();
+    res.json({
+      usuarios: usuarios.map(u => ({ username: u.username, nombre: u.nombre, rol: ROLES_VALIDOS.includes(u.rol) ? u.rol : "staff" }))
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/usuarios", requireAuth, requireGestion, async (req, res) => {
+  try {
+    const { username, password, nombre, rol } = req.body || {};
+    if (!username || !password || !nombre || !rol) return res.status(400).json({ error: "Todos los campos son requeridos" });
+    if (!ROLES_VALIDOS.includes(rol)) return res.status(400).json({ error: "Rol inválido" });
+    if (req.user.rol === "administrador" && rol === "propietario") {
+      return res.status(403).json({ error: "No podés crear usuarios con rol Propietario" });
+    }
+    const { usuarios, sha } = await leerUsuariosDeGitHub();
+    if (usuarios.some(u => String(u.username).toLowerCase() === String(username).toLowerCase())) {
+      return res.status(400).json({ error: "Ese nombre de usuario ya existe" });
+    }
+    const passwordHash = bcrypt.hashSync(password, 10);
+    const nuevo = [...usuarios, { username, passwordHash, nombre, rol }];
+    await escribirUsuariosDeGitHub(nuevo, sha, `Usuarios: alta de ${username} (${rol})`);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/usuarios/reset-password", requireAuth, requireGestion, async (req, res) => {
+  try {
+    const { username, password } = req.body || {};
+    if (!username || !password || password.length < 4) return res.status(400).json({ error: "Contraseña inválida (mínimo 4 caracteres)" });
+    const { usuarios, sha } = await leerUsuariosDeGitHub();
+    const idx = usuarios.findIndex(u => String(u.username).toLowerCase() === String(username).toLowerCase());
+    if (idx === -1) return res.status(404).json({ error: "Usuario no encontrado" });
+    const target = usuarios[idx];
+    if (String(target.username).toLowerCase() === String(req.user.username).toLowerCase()) {
+      return res.status(400).json({ error: "No podés restablecer tu propia contraseña desde acá" });
+    }
+    if (!puedeGestionar(req.user.rol, target.rol)) {
+      return res.status(403).json({ error: "No tenés permisos para modificar este usuario" });
+    }
+    usuarios[idx] = { ...target, passwordHash: bcrypt.hashSync(password, 10) };
+    await escribirUsuariosDeGitHub(usuarios, sha, `Usuarios: reset de contraseña de ${username}`);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/usuarios/eliminar", requireAuth, requireGestion, async (req, res) => {
+  try {
+    const { username } = req.body || {};
+    if (!username) return res.status(400).json({ error: "Usuario requerido" });
+    if (String(username).toLowerCase() === String(req.user.username).toLowerCase()) {
+      return res.status(400).json({ error: "No podés eliminar tu propia cuenta" });
+    }
+    const { usuarios, sha } = await leerUsuariosDeGitHub();
+    const target = usuarios.find(u => String(u.username).toLowerCase() === String(username).toLowerCase());
+    if (!target) return res.status(404).json({ error: "Usuario no encontrado" });
+    if (!puedeGestionar(req.user.rol, target.rol)) {
+      return res.status(403).json({ error: "No tenés permisos para eliminar este usuario" });
+    }
+    const nuevo = usuarios.filter(u => String(u.username).toLowerCase() !== String(username).toLowerCase());
+    await escribirUsuariosDeGitHub(nuevo, sha, `Usuarios: baja de ${username}`);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- Administración de usuarios vía ?admin=1, protegida por ADMIN_PASSWORD (independiente de las cuentas
+// de usuario; sirve como acceso de arranque/recuperación cuando todavía no existe ningún Propietario) ---
 app.get("/api/admin/usuarios", requireAdmin, async (req, res) => {
   try {
     const { usuarios } = await leerUsuariosDeGitHub();
-    res.json({ usuarios: usuarios.map(u => ({ username: u.username, nombre: u.nombre })) });
+    res.json({ usuarios: usuarios.map(u => ({ username: u.username, nombre: u.nombre, rol: ROLES_VALIDOS.includes(u.rol) ? u.rol : "staff" })) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -137,15 +233,16 @@ app.get("/api/admin/usuarios", requireAdmin, async (req, res) => {
 
 app.post("/api/admin/usuarios", requireAdmin, async (req, res) => {
   try {
-    const { username, password, nombre } = req.body || {};
+    const { username, password, nombre, rol } = req.body || {};
     if (!username || !password || !nombre) return res.status(400).json({ error: "Usuario, contraseña y nombre son requeridos" });
+    const rolFinal = ROLES_VALIDOS.includes(rol) ? rol : "staff";
     const { usuarios, sha } = await leerUsuariosDeGitHub();
     if (usuarios.some(u => String(u.username).toLowerCase() === String(username).toLowerCase())) {
       return res.status(400).json({ error: "Ese nombre de usuario ya existe" });
     }
     const passwordHash = bcrypt.hashSync(password, 10);
-    const nuevo = [...usuarios, { username, passwordHash, nombre }];
-    await escribirUsuariosDeGitHub(nuevo, sha, `Admin: alta de usuario ${username}`);
+    const nuevo = [...usuarios, { username, passwordHash, nombre, rol: rolFinal }];
+    await escribirUsuariosDeGitHub(nuevo, sha, `Admin: alta de usuario ${username} (${rolFinal})`);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
