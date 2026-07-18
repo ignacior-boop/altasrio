@@ -4,5 +4,11 @@
     "passwordHash": "$2a$10$o1LFrlJEolISo5nN/WOe1./ex584xtLcFLdm9VG1N6rnTqmndaWKu",
     "nombre": "Ignacio Rocca",
     "rol": "propietario"
+  },
+  {
+    "username": "AOLIVERI",
+    "passwordHash": "$2a$10$lShNNJMK8vrLJtBIMWFJWO5E4yaKhmVf/5YXwxINO4blFenuih1w6",
+    "nombre": "Andrea Oliveri",
+    "rol": "propietario"
   }
 ]
