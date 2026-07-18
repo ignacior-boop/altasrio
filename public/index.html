@@ -48,11 +48,7 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 .session-info__logout { background: none; border: none; color: var(--rm-blue); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
 .session-info__logout:hover { text-decoration: underline; }
 .brand-logo { display: flex; align-items: center; gap: 10px; }
-.brand-logo__left { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.brand-logo__left svg { width: 26px; height: 26px; display: block; }
-.brand-logo__rio { font-size: 10px; font-weight: 700; letter-spacing: 0.03em; color: var(--fg-strong); line-height: 1; }
-.brand-logo__remax { font-weight: 900; font-size: 25px; letter-spacing: -0.03em; color: var(--fg-strong); line-height: 1; white-space: nowrap; }
-.brand-logo__remax sup { font-size: 10px; font-weight: 700; }
+.brand-logo__img { height: 40px; width: auto; display: block; }
 .brand-sub { font-size: 13px; font-weight: 600; color: var(--fg-muted); }
 .container { max-width: 1000px; margin: 0 auto; padding: 0 32px; }
 .main-wrap { padding: 40px 0 80px; }
@@ -143,6 +139,21 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 .form-field__label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--fg-muted); margin-bottom: 6px; }
 .form-field__input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 6px; font-family: var(--font); font-size: 14px; color: var(--fg-strong); background: #fff; }
 .form-field__input:focus { outline: none; border-color: var(--rm-blue); }
+.password-field { position: relative; }
+.password-field .form-field__input { padding-right: 42px; }
+.password-field__toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--fg-muted); padding: 6px; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+.password-field__toggle:hover { color: var(--fg-strong); background: var(--surface-muted); }
+.admin-user-row__rol { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--rm-blue); margin-top: 2px; }
+.admin-user-row__actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.admin-user-row__reset { background: none; border: 1.5px solid var(--rm-blue); color: var(--rm-blue); font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+.admin-user-row__reset:hover { background: #EAF0FF; }
+.admin-user-row { flex-wrap: wrap; gap: 10px; }
+.admin-reset-row { display: flex; align-items: center; gap: 8px; width: 100%; padding-top: 8px; }
+.admin-reset-row .password-field { flex: 1; }
+.admin-nav-btn { background: none; border: none; color: var(--rm-blue); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
+.admin-nav-btn:hover { text-decoration: underline; }
+.gestion-back { background: none; border: none; color: var(--fg-muted); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 18px; display: inline-block; }
+.gestion-back:hover { color: var(--fg-strong); }
 .admin-wrap { max-width: 640px; margin: 0 auto; padding: 40px 20px 80px; }
 .admin-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-1); padding: 28px 32px; margin-bottom: 20px; }
 .admin-title { font-weight: 900; font-size: 18px; letter-spacing: -0.01em; color: var(--fg-strong); margin-bottom: 18px; text-transform: uppercase; }
@@ -280,7 +291,7 @@ Cédula catastral: NO es requerida. No mencionarla en documentos_faltantes.
 
 VALOR AUTORIZADO: extraé de la Autorización el monto/precio autorizado tal como figura en el texto, con moneda incluida (ej: "USD 150.000", "$ 450.000 por mes", "U$S 120.000"). Si el documento no menciona un valor, dejalo en null.
 
-CERTIFICADO DE GARANTÍA DE SERVICIOS PROFESIONALES: este documento suele estar al final de la Autorización (o como anexo). Ahí figura el nombre del agente inmobiliario de RE/MAX responsable de la operación (quien brinda el servicio, no el titular ni el comprador/vendedor). Extraé su nombre completo tal como figura en certificado_servicios.agente_nombre, y su DNI en agente_dni si está impreso ahí (dejalo null si no figura). certificado_servicios.encontrado=true si ese certificado está presente en algún documento adjunto (aunque sea como página final de la Autorización). Si no se encuentra en ningún documento, encontrado=false y agente_nombre/agente_dni en null. Este campo es solo informativo, no es un documento obligatorio ni se cruza con nada ni genera alertas por su ausencia.
+CERTIFICADO DE GARANTÍA DE SERVICIOS PROFESIONALES: este documento suele estar al final de la Autorización (o como anexo). IMPORTANTE - a quién extraer: el certificado suele nombrar a DOS personas distintas: (1) el corredor/martillero matriculado que emite o avala el certificado (es una firma responsable, NO es el agente), y (2) el agente inmobiliario operativo de RE/MAX a cargo de la operación, cuyo nombre aparece INMEDIATAMENTE ANTES de la frase "en lo sucesivo, el 'agente'" (o variantes como "en adelante, el 'agente'"). Extraé como certificado_servicios.agente_nombre exclusivamente a esta segunda persona (la nombrada justo antes de esa frase), nunca al corredor/martillero que firma o avala el certificado aunque su nombre también aparezca en el documento. Extraé su nombre completo, y su DNI en agente_dni si está impreso ahí (dejalo null si no figura). certificado_servicios.encontrado=true si ese certificado está presente en algún documento adjunto (aunque sea como página final de la Autorización). Si no se encuentra en ningún documento, o si no aparece la frase "en lo sucesivo, el 'agente'" (o variante equivalente) que permita identificar con certeza al agente, encontrado=false y agente_nombre/agente_dni en null — no adivines ni uses el nombre del corredor/martillero como fallback. Este campo es solo informativo, no es un documento obligatorio ni se cruza con nada ni genera alertas por su ausencia.
 
 REGLAMENTO DE COPROPIEDAD (opcional, solo si se adjunta): buscá cláusulas sobre el destino/uso permitido de la unidad (vivienda, profesional, comercial, mixto, u otro). reglamento_copropiedad.encontrado=true si el documento fue adjuntado. permite_uso_profesional y permite_uso_comercial: true/false según lo que indique el reglamento, o null si no lo aclara explícitamente. detalle: citá brevemente la cláusula relevante. Si el Reglamento NO fue adjuntado, reglamento_copropiedad.encontrado=false y dejá los demás campos en null; esto NUNCA es un documento obligatorio — no lo agregues a "documentos_faltantes" ni generes alerta por su ausencia.
 
@@ -307,6 +318,30 @@ function IconX() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="
 function IconWarn() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3L12 3z" fill="#B45309"/><path d="M12 9v5M12 16.5v.5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
 function IconNA() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#D8D3C6"/><path d="M7 12h10" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
 function IconUpload() { return <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 16V4M12 4l-5 5M12 4l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>; }
+function IconEye() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/></svg>; }
+function IconEyeOff() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 3l18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M10.6 5.1A11.6 11.6 0 0112 5c7 0 11 7 11 7a14.4 14.4 0 01-3.2 3.9M6.5 6.6C3.5 8.4 1 12 1 12s4 7 11 7a10.6 10.6 0 004.6-1.1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M9.9 10a3 3 0 004.2 4.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
+
+function PasswordField({ value, onChange, onKeyDown, autoFocus, placeholder }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="password-field">
+      <input
+        className="form-field__input"
+        type={show ? "text" : "password"}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        autoFocus={autoFocus}
+        placeholder={placeholder}
+      />
+      <button type="button" className="password-field__toggle" onClick={() => setShow(s => !s)} aria-label={show ? "Ocultar contraseña" : "Mostrar contraseña"} tabIndex={-1}>
+        {show ? <IconEyeOff/> : <IconEye/>}
+      </button>
+    </div>
+  );
+}
+
+const ROL_LABELS = { propietario: "Propietario", administrador: "Administrador", staff: "Staff" };
 
 const isAdminRoute = new URLSearchParams(window.location.search).get("admin") === "1";
 
@@ -317,6 +352,8 @@ function App() {
   const [error, setError] = useState(null);
   const [drag, setDrag] = useState(false);
   const [sessionNombre, setSessionNombre] = useState(null);
+  const [sessionRol, setSessionRol] = useState(null);
+  const [sessionUsername, setSessionUsername] = useState(null);
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState(null);
@@ -329,6 +366,16 @@ function App() {
   const [newUserUsername, setNewUserUsername] = useState("");
   const [newUserPassword, setNewUserPassword] = useState("");
   const [newUserNombre, setNewUserNombre] = useState("");
+  const [newUserRol, setNewUserRol] = useState("staff");
+  const [gestionUsuarios, setGestionUsuarios] = useState([]);
+  const [gestionError, setGestionError] = useState(null);
+  const [gestNewNombre, setGestNewNombre] = useState("");
+  const [gestNewUsername, setGestNewUsername] = useState("");
+  const [gestNewPassword, setGestNewPassword] = useState("");
+  const [gestNewRol, setGestNewRol] = useState("staff");
+  const [resetRow, setResetRow] = useState(null);
+  const [resetPasswordValue, setResetPasswordValue] = useState("");
+  const [preGestionStage, setPreGestionStage] = useState("upload");
   const inputRef = useRef();
 
   useEffect(() => {
@@ -336,6 +383,8 @@ function App() {
     fetch("/api/me").then(r => r.json()).then(d => {
       if (d.nombre) {
         setSessionNombre(d.nombre);
+        setSessionRol(d.rol || "staff");
+        setSessionUsername(d.username || null);
         setStage("upload");
         fetch("/api/historial").then(r => r.json()).then(dh => setHistorial(dh.items || [])).catch(() => {});
       } else {
@@ -355,6 +404,8 @@ function App() {
       const data = await res.json();
       if (!res.ok) { setLoginError(data.error || "No se pudo iniciar sesión"); return; }
       setSessionNombre(data.nombre);
+      setSessionRol(data.rol || "staff");
+      setSessionUsername(loginUsername);
       setStage("upload");
       fetch("/api/historial").then(r => r.json()).then(dh => setHistorial(dh.items || [])).catch(() => {});
     } catch (e) {
@@ -365,9 +416,86 @@ function App() {
   async function logout() {
     try { await fetch("/api/logout", { method: "POST" }); } catch (e) {}
     setSessionNombre(null);
+    setSessionRol(null);
+    setSessionUsername(null);
     setResult(null);
     setFiles([]);
     setStage("login");
+  }
+
+  function abrirGestion() {
+    setPreGestionStage(stage === "gestion" ? preGestionStage : stage);
+    setGestionError(null);
+    setResetRow(null);
+    setStage("gestion");
+    cargarGestionUsuarios();
+  }
+
+  function cerrarGestion() {
+    setStage(preGestionStage);
+  }
+
+  async function cargarGestionUsuarios() {
+    try {
+      const res = await fetch("/api/usuarios");
+      const data = await res.json();
+      if (!res.ok) { setGestionError(data.error || "No se pudo cargar la lista de usuarios"); return; }
+      setGestionUsuarios(data.usuarios || []);
+    } catch (e) {
+      setGestionError("No se pudo conectar con el servidor");
+    }
+  }
+
+  async function agregarGestUsuario() {
+    setGestionError(null);
+    try {
+      const res = await fetch("/api/usuarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: gestNewUsername, password: gestNewPassword, nombre: gestNewNombre, rol: gestNewRol })
+      });
+      const data = await res.json();
+      if (!res.ok) { setGestionError(data.error || "No se pudo agregar el usuario"); return; }
+      setGestNewUsername(""); setGestNewPassword(""); setGestNewNombre(""); setGestNewRol("staff");
+      cargarGestionUsuarios();
+    } catch (e) {
+      setGestionError("No se pudo conectar con el servidor");
+    }
+  }
+
+  async function eliminarGestUsuario(username) {
+    if (!window.confirm(`¿Eliminar al usuario ${username}? Esta acción no se puede deshacer.`)) return;
+    setGestionError(null);
+    try {
+      const res = await fetch("/api/usuarios/eliminar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username })
+      });
+      const data = await res.json();
+      if (!res.ok) { setGestionError(data.error || "No se pudo eliminar el usuario"); return; }
+      cargarGestionUsuarios();
+    } catch (e) {
+      setGestionError("No se pudo conectar con el servidor");
+    }
+  }
+
+  async function confirmarResetPassword(username) {
+    if (!resetPasswordValue || resetPasswordValue.length < 4) { setGestionError("La contraseña debe tener al menos 4 caracteres"); return; }
+    setGestionError(null);
+    try {
+      const res = await fetch("/api/usuarios/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password: resetPasswordValue })
+      });
+      const data = await res.json();
+      if (!res.ok) { setGestionError(data.error || "No se pudo restablecer la contraseña"); return; }
+      setResetRow(null);
+      setResetPasswordValue("");
+    } catch (e) {
+      setGestionError("No se pudo conectar con el servidor");
+    }
   }
 
   async function cargarAdminUsuarios(pass) {
@@ -389,11 +517,11 @@ function App() {
       const res = await fetch("/api/admin/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adminPassword, username: newUserUsername, password: newUserPassword, nombre: newUserNombre })
+        body: JSON.stringify({ adminPassword, username: newUserUsername, password: newUserPassword, nombre: newUserNombre, rol: newUserRol })
       });
       const data = await res.json();
       if (!res.ok) { setAdminError(data.error || "No se pudo agregar el usuario"); return; }
-      setNewUserUsername(""); setNewUserPassword(""); setNewUserNombre("");
+      setNewUserUsername(""); setNewUserPassword(""); setNewUserNombre(""); setNewUserRol("staff");
       cargarAdminUsuarios(adminPassword);
     } catch (e) {
       setAdminError("No se pudo conectar con el servidor");
@@ -528,26 +656,15 @@ function App() {
         <div className="site-header__inner">
           <div className="site-header__left">
             <div className="brand-logo">
-              <div className="brand-logo__left">
-                <svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <clipPath id="pinClip"><path d="M35,2 C18,2 4,16 4,33 C4,52 35,68 35,68 C35,68 66,52 66,33 C66,16 52,2 35,2 Z"/></clipPath>
-                  </defs>
-                  <g clipPath="url(#pinClip)">
-                    <rect x="0" y="0" width="35" height="38" fill="#7A0C10"/>
-                    <rect x="35" y="0" width="35" height="38" fill="#FF1200"/>
-                    <rect x="0" y="38" width="70" height="8" fill="#F7F5EE"/>
-                    <rect x="0" y="46" width="70" height="26" fill="#0043FF"/>
-                  </g>
-                </svg>
-                <div className="brand-logo__rio">RIO</div>
-              </div>
-              <div className="brand-logo__remax">RE/MAX<sup>®</sup></div>
+              <img className="brand-logo__img" src="/remax-rio-logo.png" alt="RE/MAX Río" />
             </div>
             <span className="brand-sub">· Control de Alta de Publicación</span>
           </div>
           {!isAdminRoute && sessionNombre && (
             <div className="session-info">
+              {(sessionRol === "propietario" || sessionRol === "administrador") && (
+                <button className="admin-nav-btn" onClick={abrirGestion}>Usuarios</button>
+              )}
               <span className="session-info__nombre">{sessionNombre}</span>
               <button className="session-info__logout" onClick={logout}>Cerrar sesión</button>
             </div>
@@ -561,34 +678,35 @@ function App() {
           {isAdminRoute && (
             <div className="admin-wrap">
               <div className="eyebrow">Administración</div>
-              <h1 className="page-title" style={{fontSize:"28px", marginBottom:"24px"}}>Gestión de agentes</h1>
+              <h1 className="page-title" style={{fontSize:"28px", marginBottom:"24px"}}>Gestión de usuarios</h1>
               {!adminAuthed ? (
                 <div className="admin-card">
                   {adminError && <div className="errbox">⚠ {adminError}</div>}
                   <div className="form-field">
                     <label className="form-field__label">Contraseña de administrador</label>
-                    <input className="form-field__input" type="password" value={adminPassword} onChange={e => setAdminPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && cargarAdminUsuarios(adminPassword)} />
+                    <PasswordField value={adminPassword} onChange={e => setAdminPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && cargarAdminUsuarios(adminPassword)} />
                   </div>
                   <button className="btn btn-primary" style={{marginTop:"8px"}} onClick={() => cargarAdminUsuarios(adminPassword)}>Entrar</button>
                 </div>
               ) : (
                 <>
                   <div className="admin-card">
-                    <div className="admin-title">Agentes registrados</div>
+                    <div className="admin-title">Usuarios registrados</div>
                     {adminError && <div className="errbox">⚠ {adminError}</div>}
-                    {adminUsuarios.length === 0 && <div className="admin-empty">Todavía no hay agentes cargados</div>}
+                    {adminUsuarios.length === 0 && <div className="admin-empty">Todavía no hay usuarios cargados</div>}
                     {adminUsuarios.map(u => (
                       <div className="admin-user-row" key={u.username}>
                         <div>
                           <div className="admin-user-row__nombre">{u.nombre}</div>
                           <div className="admin-user-row__username">usuario: {u.username}</div>
+                          <div className="admin-user-row__rol">{ROL_LABELS[u.rol] || "Staff"}</div>
                         </div>
                         <button className="admin-user-row__del" onClick={() => eliminarUsuario(u.username)}>Eliminar</button>
                       </div>
                     ))}
                   </div>
                   <div className="admin-card">
-                    <div className="admin-title">Agregar agente</div>
+                    <div className="admin-title">Agregar usuario</div>
                     <div className="form-field">
                       <label className="form-field__label">Nombre y apellido</label>
                       <input className="form-field__input" type="text" value={newUserNombre} onChange={e => setNewUserNombre(e.target.value)} />
@@ -599,9 +717,17 @@ function App() {
                     </div>
                     <div className="form-field">
                       <label className="form-field__label">Contraseña</label>
-                      <input className="form-field__input" type="password" value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} />
+                      <PasswordField value={newUserPassword} onChange={e => setNewUserPassword(e.target.value)} />
                     </div>
-                    <button className="btn btn-primary" disabled={!newUserUsername || !newUserPassword || !newUserNombre} onClick={agregarUsuario}>Agregar agente</button>
+                    <div className="form-field">
+                      <label className="form-field__label">Rol</label>
+                      <select className="form-field__input" value={newUserRol} onChange={e => setNewUserRol(e.target.value)}>
+                        <option value="staff">Staff</option>
+                        <option value="administrador">Administrador</option>
+                        <option value="propietario">Propietario</option>
+                      </select>
+                    </div>
+                    <button className="btn btn-primary" disabled={!newUserUsername || !newUserPassword || !newUserNombre} onClick={agregarUsuario}>Agregar usuario</button>
                   </div>
                 </>
               )}
@@ -626,9 +752,71 @@ function App() {
                 </div>
                 <div className="form-field">
                   <label className="form-field__label">Contraseña</label>
-                  <input className="form-field__input" type="password" value={loginPassword} onChange={e => setLoginPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && login()} />
+                  <PasswordField value={loginPassword} onChange={e => setLoginPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && login()} />
                 </div>
                 <button className="btn btn-primary" disabled={!loginUsername || !loginPassword} onClick={login}>Ingresar</button>
+              </div>
+            </div>
+          )}
+
+          {!isAdminRoute && stage === "gestion" && (
+            <div className="admin-wrap">
+              <button className="gestion-back" onClick={cerrarGestion}>&larr; Volver</button>
+              <h1 className="page-title" style={{fontSize:"28px", marginBottom:"24px"}}>Gestión de usuarios</h1>
+              <div className="admin-card">
+                <div className="admin-title">Usuarios registrados</div>
+                {gestionError && <div className="errbox">⚠ {gestionError}</div>}
+                {gestionUsuarios.length === 0 && <div className="admin-empty">Todavía no hay usuarios cargados</div>}
+                {gestionUsuarios.map(u => {
+                  const puedeGestionar = (sessionRol === "propietario" || (sessionRol === "administrador" && u.rol !== "propietario")) && u.username !== sessionUsername;
+                  return (
+                    <div className="admin-user-row" key={u.username}>
+                      <div>
+                        <div className="admin-user-row__nombre">{u.nombre}</div>
+                        <div className="admin-user-row__username">usuario: {u.username}</div>
+                        <div className="admin-user-row__rol">{ROL_LABELS[u.rol] || "Staff"}</div>
+                      </div>
+                      {puedeGestionar && (
+                        <div className="admin-user-row__actions">
+                          <button className="admin-user-row__reset" onClick={() => { setResetRow(resetRow === u.username ? null : u.username); setResetPasswordValue(""); setGestionError(null); }}>
+                            {resetRow === u.username ? "Cancelar" : "Restablecer contraseña"}
+                          </button>
+                          <button className="admin-user-row__del" onClick={() => eliminarGestUsuario(u.username)}>Eliminar</button>
+                        </div>
+                      )}
+                      {resetRow === u.username && (
+                        <div className="admin-reset-row">
+                          <PasswordField value={resetPasswordValue} onChange={e => setResetPasswordValue(e.target.value)} placeholder="Nueva contraseña" />
+                          <button className="btn btn-primary" onClick={() => confirmarResetPassword(u.username)}>Guardar</button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="admin-card">
+                <div className="admin-title">Agregar usuario</div>
+                <div className="form-field">
+                  <label className="form-field__label">Nombre y apellido</label>
+                  <input className="form-field__input" type="text" value={gestNewNombre} onChange={e => setGestNewNombre(e.target.value)} />
+                </div>
+                <div className="form-field">
+                  <label className="form-field__label">Usuario</label>
+                  <input className="form-field__input" type="text" value={gestNewUsername} onChange={e => setGestNewUsername(e.target.value)} />
+                </div>
+                <div className="form-field">
+                  <label className="form-field__label">Contraseña</label>
+                  <PasswordField value={gestNewPassword} onChange={e => setGestNewPassword(e.target.value)} />
+                </div>
+                <div className="form-field">
+                  <label className="form-field__label">Rol</label>
+                  <select className="form-field__input" value={gestNewRol} onChange={e => setGestNewRol(e.target.value)}>
+                    <option value="staff">Staff</option>
+                    <option value="administrador">Administrador</option>
+                    {sessionRol === "propietario" && <option value="propietario">Propietario</option>}
+                  </select>
+                </div>
+                <button className="btn btn-primary" disabled={!gestNewUsername || !gestNewPassword || !gestNewNombre} onClick={agregarGestUsuario}>Agregar usuario</button>
               </div>
             </div>
           )}
