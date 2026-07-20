@@ -1,5 +1,149 @@
 [
   {
+    "id": "mrtqfafqlsgx7k",
+    "fecha": "2026-07-20T21:23:55.670Z",
+    "agente": "MATEO GÓMEZ",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Avenida Carabobo 720, Piso 1, Departamento D",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Departamento (Unidad Funcional N°8, Piso 1°)",
+        "direccion": "Avenida Carabobo 720, Piso 1, Departamento D",
+        "localidad": "Ciudad Autónoma de Buenos Aires"
+      },
+      "titulares": [
+        {
+          "nombre": "VIVIANA EDITH BRITO",
+          "dni": "23.822.091"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 125.000",
+        "fecha_firma": "18/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "02/01/2027",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Avenida Carabobo 720, Piso 1, Departamento D, Barrio Flores, CABA",
+        "firmante_nombre": "VIVIANA EDITH BRITO",
+        "firmante_dni": "23.822.091"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "NORMA MARTA DEMICHELI",
+            "dni": null
+          }
+        ],
+        "direccion": "Avenida Carabobo 720, Piso 1, Unidad Funcional N°8, CABA",
+        "m2_cubiertos": "52,49 m² (superficie cubierta propia total)",
+        "m2_semicubiertos": "56,46 m² (azotea de uso exclusivo en 2° piso)",
+        "m2_descubiertos": null,
+        "m2_totales": "52,49 m² (cubiertos propios); uso exclusivo azotea 56,46 m²",
+        "matricula_rpi": "F.R.5-285/8",
+        "sello_rpi": true
+      },
+      "reglamento_copropiedad": {
+        "encontrado": true,
+        "permite_uso_profesional": true,
+        "permite_uso_comercial": false,
+        "detalle": "Art. 5°: Las unidades se destinarán únicamente para vivienda familiar. Solo en caso de que los titulares del dominio sean profesionales, podrán ejercer sus profesiones liberales, con exclusión de toda otra actividad civil o comercial. Art. 6°: Los departamentos no podrán ser destinados a otros usos como oficinas, depósitos, talleres, clínicas, casas de pensión, alquiler de habitaciones, ni toda actividad contraria a la tranquilidad, decoro o moralidad del edificio."
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "MATEO GÓMEZ",
+        "agente_dni": "43.085.494"
+      },
+      "dnis": [
+        {
+          "nombre": "VIVIANA EDITH BRITO",
+          "numero": "23.822.091"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "VIVIANA EDITH BRITO",
+          "dni": "23.822.091",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": false,
+          "detalle": "La autorización está firmada por VIVIANA EDITH BRITO (titular actual según escritura de compraventa 2008), pero la escritura en los documentos adjuntos corresponde a la escritura original del inmueble donde figura como vendedora NORMA MARTA DEMICHELI. La escritura de adquisición de Brito (2008) está referenciada en el documento pero no se adjuntó en forma completa como título de dominio vigente a nombre de Brito. La titularidad de Brito surge de la escritura de compraventa Nº 161 de fecha 18/09/2008 (Demicheli a favor de Brito), cuyas últimas páginas están presentes pero el cuerpo principal también. Se verifica que Brito es compradora/adquirente según esa escritura. Sin embargo, el título presentado como 'escritura' es el de la cadena dominial anterior (a nombre de Demicheli). Se observa incongruencia: el título de dominio vigente a nombre de Brito no se adjuntó en forma completa e independiente."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El nombre en la autorización (VIVIANA EDITH BRITO) coincide con el DNI presentado (VIVIANA EDITH BRITO, DNI 23.822.091)."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El nombre en la autorización (VIVIANA EDITH BRITO) coincide con el formulario UIF presentado (VIVIANA EDITH BRITO)."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El DNI consignado en la autorización (23.822.091) coincide con el DNI físico presentado (23.822.091)."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El DNI en la autorización (23.822.091) coincide con el DNI consignado en el formulario UIF (23.822.091)."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La dirección en la autorización (Av. Carabobo 720, Piso 1, Dpto. D, Barrio Flores, CABA) coincide con la del inmueble descripto en la escritura de compraventa (Av. Carabobo 720, UF N°8, Piso 1°, CABA). La denominación 'Departamento D' en la autorización corresponde a la UF N°8 (Letra D según planilla de superficies del plano). Compatible."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No se presentó declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No se presentó declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No se presentó poder notarial."
+        }
+      },
+      "documentos_faltantes": [
+        "Escritura de dominio vigente a nombre de VIVIANA EDITH BRITO (título de adquisición completo - escritura de compraventa Demicheli a Brito, 2008) en forma completa e independiente como documento de propiedad actual"
+      ],
+      "alertas": [
+        "La escritura adjunta como 'escrit carabobo.pdf' corresponde a la escritura de compraventa N°161 del 18/09/2008 (Demicheli vendedora, Brito compradora), pero el documento principal de la cadena dominial presentado como título de propiedad está a nombre de NORMA MARTA DEMICHELI. Si bien se verifica que Brito es la adquirente en esa misma escritura, conviene adjuntar el título de dominio vigente de forma clara y completa con la inscripción RPI a nombre de Brito para acreditar fehacientemente su titularidad actual.",
+        "La matrícula RPI indicada en la escritura adjunta es F.R.5-285/8 (anterior inscripción). En la autorización el campo MATRÍCULA figura en blanco (puntos suspensivos). Se recomienda completar la matrícula actual del inmueble en la autorización.",
+        "El Certificado de Garantía de Servicios Profesionales indica fecha '18 días del mes de junio de 2026', mientras que la Autorización de Venta está firmada el '18 días del mes de julio de 2026'. Existe una discrepancia de un mes entre ambos documentos. Verificar si el certificado fue emitido antes de la autorización (precontractual) o si hay un error de fecha.",
+        "La escritura adjunta indica que la vendedora (Demicheli) era titular de Libreta Cívica N°6.534.526, no de DNI. Esto es consistente con el escribano que deja constancia de ello en el documento. No genera inconveniente para la operación actual de Brito.",
+        "El UIF Formulario N°1 (uif 1 carabobo.pdf) indica fecha de nacimiento 18/02/1984, mientras que la escritura de 2008 y el DNI indican fecha de nacimiento 18/02/1974. Existe una discrepancia en el año de nacimiento en el formulario UIF. Verificar y corregir.",
+        "El reglamento de copropiedad prohíbe el uso comercial y solo permite uso profesional liberal a titulares del dominio. En caso de que el futuro comprador no sea profesional liberal, el uso quedará restringido exclusivamente a vivienda familiar."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "mrqwn2bbm0pkug",
     "fecha": "2026-07-18T21:54:37.559Z",
     "agente": "ESTHEFANIE VASQUEZ",
