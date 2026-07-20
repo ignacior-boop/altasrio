@@ -47,14 +47,16 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 .session-info__nombre { font-weight: 700; color: var(--fg-strong); }
 .session-info__logout { background: none; border: none; color: var(--rm-blue); font-family: var(--font); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; }
 .session-info__logout:hover { text-decoration: underline; }
-.nav-menu { position: relative; display: flex; align-items: center; }
-.nav-menu__trigger { background: none; border: 1.5px solid var(--border); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--fg-strong); }
-.nav-menu__trigger:hover { background: var(--surface-muted); }
-.nav-menu__dropdown { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-3); min-width: 180px; padding: 6px; z-index: 60; display: flex; flex-direction: column; }
-.nav-menu__item { background: none; border: none; text-align: left; padding: 10px 12px; font-family: var(--font); font-size: 13.5px; font-weight: 600; color: var(--fg-strong); cursor: pointer; border-radius: 6px; }
-.nav-menu__item:hover { background: var(--surface-muted); }
-.nav-menu__item--danger { color: var(--err); }
-.nav-menu__item--danger:hover { background: var(--err-bg); }
+.menu-zone { position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; display: flex; }
+.menu-edge { width: 44px; height: 100%; background: rgba(0,14,53,0.07); border: none; display: flex; align-items: flex-start; justify-content: center; padding-top: 22px; cursor: pointer; color: var(--fg-strong); transition: background .15s var(--ease-out); }
+.menu-edge:hover { background: rgba(0,14,53,0.12); }
+.menu-panel { width: 0; overflow: hidden; background: #fff; box-shadow: var(--shadow-3); height: 100%; transition: width .22s var(--ease-out); }
+.menu-panel.open { width: 210px; }
+.menu-panel__title { padding: 16px 18px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rm-blue-deep); background: var(--surface-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.menu-panel__item { display: block; width: 100%; background: none; border: none; border-bottom: 1px solid var(--border); text-align: left; padding: 14px 18px; font-family: var(--font); font-size: 13.5px; font-weight: 600; color: var(--fg-strong); cursor: pointer; white-space: nowrap; }
+.menu-panel__item:hover { background: var(--surface-muted); }
+.menu-panel__item--danger { color: var(--err); }
+.menu-panel__item--danger:hover { background: var(--err-bg); }
 .brand-logo { display: flex; align-items: center; gap: 10px; }
 .brand-logo__img { height: 40px; width: auto; display: block; }
 .brand-sub { font-size: 13px; font-weight: 600; color: var(--fg-muted); }
@@ -703,6 +705,24 @@ function App() {
 
   return (
     <div>
+      {!isAdminRoute && sessionNombre && (
+        <div className="menu-zone" ref={menuRef}>
+          <button className="menu-edge" onClick={() => setMenuOpen(o => !o)} aria-label="Menú">
+            <IconMenu/>
+          </button>
+          <div className={`menu-panel${menuOpen ? " open" : ""}`}>
+            <div className="menu-panel__title">Menú</div>
+            {stage !== "upload" && (
+              <button className="menu-panel__item" onClick={() => { setStage("upload"); setMenuOpen(false); }}>Analizar</button>
+            )}
+            {(sessionRol === "propietario" || sessionRol === "administrador") && (
+              <button className="menu-panel__item" onClick={() => { abrirGestion(); setMenuOpen(false); }}>Usuarios</button>
+            )}
+            <button className="menu-panel__item menu-panel__item--danger" onClick={() => { setMenuOpen(false); logout(); }}>Cerrar sesión</button>
+          </div>
+        </div>
+      )}
+
       {!isAdminRoute && stage !== "login" && stage !== "checking" && (
         <div className="historial-zone" onMouseEnter={() => setHistOpen(true)} onMouseLeave={() => setHistOpen(false)}>
           <div className={`historial-panel${histOpen ? " open" : ""}`}>
@@ -731,24 +751,6 @@ function App() {
       <header className="site-header">
         <div className="site-header__inner">
           <div className="site-header__left">
-            {!isAdminRoute && sessionNombre && (
-              <div className="nav-menu" ref={menuRef}>
-                <button className="nav-menu__trigger" onClick={() => setMenuOpen(o => !o)} aria-label="Menú">
-                  <IconMenu/>
-                </button>
-                {menuOpen && (
-                  <div className="nav-menu__dropdown">
-                    {stage !== "upload" && (
-                      <button className="nav-menu__item" onClick={() => { setStage("upload"); setMenuOpen(false); }}>Analizar</button>
-                    )}
-                    {(sessionRol === "propietario" || sessionRol === "administrador") && (
-                      <button className="nav-menu__item" onClick={() => { abrirGestion(); setMenuOpen(false); }}>Usuarios</button>
-                    )}
-                    <button className="nav-menu__item nav-menu__item--danger" onClick={() => { setMenuOpen(false); logout(); }}>Cerrar sesión</button>
-                  </div>
-                )}
-              </div>
-            )}
             <div className="brand-logo">
               <img className="brand-logo__img" src="/remax-rio-logo.png" alt="RE/MAX Río" />
             </div>
