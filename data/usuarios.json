@@ -10,5 +10,11 @@
     "passwordHash": "$2a$10$lShNNJMK8vrLJtBIMWFJWO5E4yaKhmVf/5YXwxINO4blFenuih1w6",
     "nombre": "Andrea Oliveri",
     "rol": "propietario"
+  },
+  {
+    "username": "DAIANAM",
+    "passwordHash": "$2a$10$DAh.DVUUhuOfslQ8XDuw.eGoSN3PUSG2SczVB1ua2s.aKLT1iX66q",
+    "nombre": "Daiana Mildenberg",
+    "rol": "staff"
   }
 ]
