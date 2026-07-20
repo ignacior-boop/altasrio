@@ -1,5 +1,145 @@
 [
   {
+    "id": "mrtr030tmdyub0",
+    "fecha": "2026-07-20T21:40:05.837Z",
+    "agente": "Mateo Gómez",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Avenida Carabobo 720 Piso 1 Departamento D",
+    "veredicto": "APTO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Departamento",
+        "direccion": "Avenida Carabobo 720 Piso 1 Departamento D",
+        "localidad": "Ciudad Autónoma de Buenos Aires"
+      },
+      "titulares": [
+        {
+          "nombre": "VIVIANA EDITH BRITO",
+          "dni": "23.822.091"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 125.000",
+        "fecha_firma": "18/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "02/01/2027",
+        "comision_porcentaje": "3% más IVA",
+        "direccion": "Avenida Carabobo 720 Piso 1 Departamento D, Barrio Flores, Ciudad Autónoma de Buenos Aires",
+        "firmante_nombre": "VIVIANA EDITH BRITO",
+        "firmante_dni": "23.822.091"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "VIVIANA EDITH BRITO",
+            "dni": "23.822.091"
+          }
+        ],
+        "direccion": "Avenida Carabobo 720, Unidad Funcional 8, Primer Piso, Ciudad Autónoma de Buenos Aires",
+        "m2_cubiertos": "52,49 m²",
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "52,49 m² (superficie cubierta propia total)",
+        "matricula_rpi": "F.R.5-285/8",
+        "sello_rpi": true
+      },
+      "reglamento_copropiedad": {
+        "encontrado": true,
+        "permite_uso_profesional": true,
+        "permite_uso_comercial": false,
+        "detalle": "Artículo Quinto: las unidades se destinarán únicamente para vivienda familiar. Solo en caso de que los titulares del dominio sean profesionales, podrán ejercer en las unidades de su pertenencia sus profesiones liberales, con exclusión de toda otra actividad civil o comercial. Artículo Sexto: los departamentos no podrán ser destinados a oficinas, depósitos, venta de mercaderías, talleres, clínicas, casas de pensión u otros usos contrarios a la tranquilidad, decoro o moralidad."
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "Mateo Gómez",
+        "agente_dni": "43.085.494"
+      },
+      "dnis": [
+        {
+          "nombre": "VIVIANA EDITH BRITO",
+          "numero": "23.822.091"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "VIVIANA EDITH BRITO",
+          "dni": "23.822.091",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El firmante de la autorización VIVIANA EDITH BRITO coincide con el titular de la escritura VIVIANA EDITH BRITO."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El nombre VIVIANA EDITH BRITO en la autorización coincide con el DNI presentado a nombre de VIVIANA EDITH BRITO."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El nombre VIVIANA EDITH BRITO en la autorización coincide con el formulario UIF presentado a nombre de VIVIANA EDITH BRITO."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El DNI 23.822.091 declarado en la autorización coincide con el número de documento en el DNI presentado."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El DNI 23.822.091 declarado en la autorización coincide con el DNI consignado en el formulario UIF (23.822.091)."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La dirección en la autorización (Av. Carabobo 720 Piso 1 Dpto. D) coincide con la descripta en la escritura (Av. Carabobo 720, Unidad Funcional 8, Primer Piso)."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay poder notarial presentado."
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "La matrícula RPI en la autorización figura en blanco (no completada). Verificar que la matrícula F.R.5-285/8 que surge de la escritura sea correcta e incorporarla a la autorización.",
+        "La escritura identifica la unidad como Unidad Funcional número OCHO (8) en el primer piso, mientras que la autorización refiere al Departamento D. Verificar que ambas referencias correspondan al mismo inmueble.",
+        "La fecha del Certificado de Garantía de Servicios Profesionales (18 de junio de 2026) es anterior a la fecha de la autorización (18 de julio de 2026). Verificar consistencia de fechas.",
+        "El reglamento de copropiedad permite uso profesional liberal pero prohíbe expresamente uso comercial y otros destinos. Informar al autorizante sobre estas restricciones para potenciales compradores."
+      ],
+      "veredicto": "APTO"
+    }
+  },
+  {
     "id": "mrtqqkcs84e6in",
     "fecha": "2026-07-20T21:32:41.740Z",
     "agente": "MATEO GÓMEZ",
