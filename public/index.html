@@ -53,10 +53,12 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 .menu-panel { width: 0; overflow: hidden; background: #fff; box-shadow: var(--shadow-3); height: 100%; transition: width .22s var(--ease-out); }
 .menu-panel.open { width: 210px; }
 .menu-panel__title { padding: 16px 18px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--rm-blue-deep); background: var(--surface-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-.menu-panel__item { display: block; width: 100%; background: none; border: none; border-bottom: 1px solid var(--border); text-align: left; padding: 14px 18px; font-family: var(--font); font-size: 13.5px; font-weight: 600; color: var(--fg-strong); cursor: pointer; white-space: nowrap; }
-.menu-panel__item:hover { background: var(--surface-muted); }
+.menu-panel__item { display: block; width: 100%; background: none; border: none; border-left: 3px solid transparent; border-bottom: 1px solid var(--border); text-align: left; padding: 14px 16px; font-family: var(--font); font-size: 13.5px; font-weight: 600; color: var(--fg-muted); cursor: pointer; white-space: nowrap; }
+.menu-panel__item:hover { background: var(--surface-muted); color: var(--fg-strong); }
+.menu-panel__item--active { color: var(--rm-blue-deep); font-weight: 800; background: var(--surface-muted); border-left-color: var(--rm-blue); }
+.menu-panel__item--active:hover { color: var(--rm-blue-deep); }
 .menu-panel__item--danger { color: var(--err); }
-.menu-panel__item--danger:hover { background: var(--err-bg); }
+.menu-panel__item--danger:hover { background: var(--err-bg); color: var(--err); }
 .brand-logo { display: flex; align-items: center; gap: 10px; }
 .brand-logo__img { height: 40px; width: auto; display: block; }
 .brand-sub { font-size: 13px; font-weight: 600; color: var(--fg-muted); }
@@ -712,11 +714,9 @@ function App() {
           </button>
           <div className={`menu-panel${menuOpen ? " open" : ""}`}>
             <div className="menu-panel__title">Menú</div>
-            {stage !== "upload" && (
-              <button className="menu-panel__item" onClick={() => { setStage("upload"); setMenuOpen(false); }}>Analizar</button>
-            )}
+            <button className={`menu-panel__item${stage === "upload" || stage === "loading" || stage === "report" ? " menu-panel__item--active" : ""}`} onClick={() => { setStage("upload"); setMenuOpen(false); }}>Analizar</button>
             {(sessionRol === "propietario" || sessionRol === "administrador") && (
-              <button className="menu-panel__item" onClick={() => { abrirGestion(); setMenuOpen(false); }}>Usuarios</button>
+              <button className={`menu-panel__item${stage === "gestion" ? " menu-panel__item--active" : ""}`} onClick={() => { abrirGestion(); setMenuOpen(false); }}>Usuarios</button>
             )}
             <button className="menu-panel__item menu-panel__item--danger" onClick={() => { setMenuOpen(false); logout(); }}>Cerrar sesión</button>
           </div>
