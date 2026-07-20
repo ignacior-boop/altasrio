@@ -26,6 +26,19 @@ const SESSION_SECRET = process.env.SESSION_SECRET || (() => {
 
 const ROLES_VALIDOS = ["propietario", "administrador", "staff"];
 
+// Ventana deslizante de inactividad: la sesión se renueva en cada request autenticado
+// y expira sola si pasan más de 40 minutos sin actividad. La cookie no lleva maxAge
+// (cookie de sesión), por lo que además se pierde al cerrar el navegador.
+const SESSION_MAX_IDLE = "40m";
+
+function firmarSesion(payload) {
+  return jwt.sign({ username: payload.username, nombre: payload.nombre, rol: payload.rol }, SESSION_SECRET, { expiresIn: SESSION_MAX_IDLE });
+}
+
+function setSessionCookie(res, token) {
+  res.cookie("rm_session", token, { httpOnly: true, sameSite: "lax", secure: true });
+}
+
 // --- Historial de análisis (persistido como un archivo JSON en el repo de GitHub,
 // para que sea compartido entre todos los usuarios y no se pierda con los reinicios/redeploys de Render) ---
 async function leerHistorialDeGitHub() {
@@ -87,9 +100,13 @@ function requireAuth(req, res, next) {
   const token = req.cookies?.rm_session;
   if (!token) return res.status(401).json({ error: "No autenticado" });
   try {
-    req.user = jwt.verify(token, SESSION_SECRET);
+    const payload = jwt.verify(token, SESSION_SECRET);
+    req.user = payload;
+    // Actividad detectada: renovamos la ventana de 40 minutos
+    setSessionCookie(res, firmarSesion(payload));
     next();
   } catch (e) {
+    res.clearCookie("rm_session");
     res.status(401).json({ error: "Sesión inválida o expirada" });
   }
 }
@@ -120,8 +137,7 @@ app.post("/api/login", async (req, res) => {
       return res.status(401).json({ error: "Usuario o contraseña incorrectos" });
     }
     const rol = ROLES_VALIDOS.includes(u.rol) ? u.rol : "staff";
-    const token = jwt.sign({ username: u.username, nombre: u.nombre, rol }, SESSION_SECRET, { expiresIn: "30d" });
-    res.cookie("rm_session", token, { httpOnly: true, sameSite: "lax", secure: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
+    setSessionCookie(res, firmarSesion({ username: u.username, nombre: u.nombre, rol }));
     res.json({ ok: true, nombre: u.nombre, rol });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -138,8 +154,10 @@ app.get("/api/me", (req, res) => {
   if (!token) return res.json({ nombre: null });
   try {
     const payload = jwt.verify(token, SESSION_SECRET);
+    setSessionCookie(res, firmarSesion(payload));
     res.json({ nombre: payload.nombre, rol: payload.rol || "staff", username: payload.username });
   } catch {
+    res.clearCookie("rm_session");
     res.json({ nombre: null });
   }
 });
@@ -329,6 +347,38 @@ app.post("/api/historial", requireAuth, async (req, res) => {
     if (!putRes.ok) throw new Error(`GitHub API ${putRes.status}: ${await putRes.text()}`);
 
     res.json({ ok: true, entry });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/historial/eliminar", requireAuth, requireGestion, async (req, res) => {
+  if (!GITHUB_TOKEN) {
+    return res.status(500).json({ error: "GITHUB_TOKEN no configurado en el servidor" });
+  }
+  try {
+    const { id } = req.body || {};
+    if (!id) return res.status(400).json({ error: "ID requerido" });
+    const { items, sha } = await leerHistorialDeGitHub();
+    const nuevoItems = items.filter(i => i.id !== id);
+    const nuevoContenido = Buffer.from(JSON.stringify(nuevoItems, null, 2)).toString("base64");
+
+    const putRes = await fetch(GITHUB_API, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: "application/vnd.github+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: `Historial: baja de análisis ${id}`,
+        content: nuevoContenido,
+        sha
+      })
+    });
+    if (!putRes.ok) throw new Error(`GitHub API ${putRes.status}: ${await putRes.text()}`);
+
+    res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
