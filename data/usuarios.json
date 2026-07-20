@@ -16,5 +16,11 @@
     "passwordHash": "$2a$10$DAh.DVUUhuOfslQ8XDuw.eGoSN3PUSG2SczVB1ua2s.aKLT1iX66q",
     "nombre": "Daiana Mildenberg",
     "rol": "staff"
+  },
+  {
+    "username": "BAIMAR",
+    "passwordHash": "$2a$10$tXgzeb2.XjZry5vQtgdu6.IymTl8PsxI9lkTkLWct76PJOGH3lox.",
+    "nombre": "Belen Aimar",
+    "rol": "staff"
   }
 ]
