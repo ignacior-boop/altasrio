@@ -22,5 +22,11 @@
     "passwordHash": "$2a$10$tXgzeb2.XjZry5vQtgdu6.IymTl8PsxI9lkTkLWct76PJOGH3lox.",
     "nombre": "Belen Aimar",
     "rol": "staff"
+  },
+  {
+    "username": "FSCRIGNA",
+    "passwordHash": "$2a$10$2Ze23MBhOFd5bFtCrLcAy.XZ4FV81skAAudxtHTolToO2HL5hYDom",
+    "nombre": "Florencia Scrigna",
+    "rol": "staff"
   }
 ]
