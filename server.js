@@ -279,6 +279,19 @@ app.post("/api/admin/usuarios/eliminar", requireAdmin, async (req, res) => {
   }
 });
 
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Tipos de error de la API de Anthropic que son transitorios (el servidor de
+// Anthropic está saturado o hubo un problema momentáneo de su lado) y por lo
+// tanto vale la pena reintentar automáticamente antes de mostrarle un error
+// al usuario. "overloaded_error" es el que corresponde al mensaje "Overloaded".
+const RETRYABLE_ERROR_TYPES = new Set(["overloaded_error", "api_error", "rate_limit_error"]);
+const ANALIZAR_MAX_INTENTOS = 3;
+// Backoff entre intentos (configurable por env var solo para acelerar los tests automatizados)
+const ANALIZAR_REINTENTO_MS = process.env.ANALIZAR_RETRY_MS_TEST
+  ? JSON.parse(process.env.ANALIZAR_RETRY_MS_TEST)
+  : [2000, 5000];
+
 app.post("/api/analizar", requireAuth, async (req, res) => {
   const API_KEY = process.env.ANTHROPIC_API_KEY;
   if (!API_KEY) {
@@ -286,18 +299,28 @@ app.post("/api/analizar", requireAuth, async (req, res) => {
   }
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": API_KEY,
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify(req.body)
-    });
+    let data, response;
+    for (let intento = 0; intento < ANALIZAR_MAX_INTENTOS; intento++) {
+      response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": API_KEY,
+          "anthropic-version": "2023-06-01"
+        },
+        body: JSON.stringify(req.body)
+      });
+      data = await response.json();
 
-    const data = await response.json();
-    res.json(data);
+      const tipoError = data?.error?.type;
+      const esUltimoIntento = intento === ANALIZAR_MAX_INTENTOS - 1;
+      if (tipoError && RETRYABLE_ERROR_TYPES.has(tipoError) && !esUltimoIntento) {
+        await sleep(ANALIZAR_REINTENTO_MS[intento] || 5000);
+        continue;
+      }
+      break;
+    }
+    res.status(response.status).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
