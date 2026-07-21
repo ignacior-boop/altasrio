@@ -668,9 +668,13 @@ function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-6",
-          max_tokens: 4000,
+          max_tokens: 8000,
           system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
-          messages: [{ role: "user", content }]
+          // El mensaje de assistant "{" al final fuerza a que la respuesta empiece
+          // directamente con el JSON (prefill), sin que el modelo agregue texto de
+          // razonamiento previo ("Voy a analizar los documentos...") que antes podía
+          // consumir el límite de tokens y truncar el JSON a mitad de camino.
+          messages: [{ role: "user", content }, { role: "assistant", content: "{" }]
         })
       });
       if (res.status === 401) return;
@@ -682,10 +686,19 @@ function App() {
         }
         throw new Error(typeof data.error === "string" ? data.error : data.error.message);
       }
-      const raw = data.content.map(i => i.text || "").join("").replace(/```json|```/g, "").trim();
+      const raw = "{" + data.content.map(i => i.text || "").join("").replace(/```json|```/g, "").trim();
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error("No se encontró JSON en la respuesta");
-      const parsed = JSON.parse(jsonMatch[0]);
+      if (!jsonMatch) {
+        const motivo = data.stop_reason === "max_tokens" ? " (la respuesta se cortó por límite de tokens)" : "";
+        throw new Error("No se encontró JSON en la respuesta" + motivo);
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(jsonMatch[0]);
+      } catch (parseErr) {
+        const motivo = data.stop_reason === "max_tokens" ? " La respuesta se cortó por límite de tokens; probá analizar de nuevo." : "";
+        throw new Error("La respuesta de la IA no es un JSON válido: " + parseErr.message + "." + motivo);
+      }
       setResult(parsed);
       setStage("report");
       setBaseFileCount(files.length);
