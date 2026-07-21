@@ -1,5 +1,151 @@
 [
   {
+    "id": "mruxplv62f2rxv",
+    "fecha": "2026-07-21T17:35:40.530Z",
+    "agente": "MATIAS RIZZI",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Joaquin V. Gonzalez 3913/17/25/27, UF 1 (Planta Baja y Planta Alta)",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Departamento (Unidad Funcional)",
+        "direccion": "Joaquin V. Gonzalez 3913/17/25/27, UF 1 (Planta Baja y Planta Alta)",
+        "localidad": "Villa Devoto, Ciudad Autónoma de Buenos Aires"
+      },
+      "titulares": [
+        {
+          "nombre": "DIEGO IGNACIO CONDERANNE",
+          "dni": "17.141.282"
+        },
+        {
+          "nombre": "MARIA FERNANDA TERZIAN",
+          "dni": "18.313.659"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": true,
+        "uif_en_escritura": true,
+        "valor_autorizado": "USD 570.000",
+        "fecha_firma": "08/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "23/12/2026",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Joaquin V. Gonzalez 3913, UF 4, Barrio de Villa Devoto, CABA",
+        "firmante_nombre": "DIEGO IGNACIO CONDERANNE y MARIA FERNANDA TERZIAN",
+        "firmante_dni": "17.141.282 y 18.313.659"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "DIEGO IGNACIO CONDERANNE",
+            "dni": "17.141.282"
+          },
+          {
+            "nombre": "MARIA FERNANDA TERZIAN",
+            "dni": "18.313.659"
+          }
+        ],
+        "direccion": "Joaquin V. Gonzalez 3913/17/25/27, UF 1 (Planta Baja y Planta Alta), Villa Devoto, CABA",
+        "m2_cubiertos": "86,24 m² (43,28 PB + 42,96 PA)",
+        "m2_semicubiertos": "2,42 m²",
+        "m2_descubiertos": "76,21 m² (28,71 PB + 47,50 PA)",
+        "m2_totales": "164,27 m²",
+        "matricula_rpi": "FR 15-74656/1",
+        "sello_rpi": true
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "MATIAS RIZZI",
+        "agente_dni": "40.891.013"
+      },
+      "dnis": [
+        {
+          "nombre": "DIEGO IGNACIO CONDERANNE",
+          "numero": "17.141.282"
+        },
+        {
+          "nombre": "MARIA FERNANDA TERZIAN",
+          "numero": "18.313.659"
+        }
+      ],
+      "uifs": [],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "Ambos autorizantes (Diego Ignacio Conderanne y Maria Fernanda Terzian) coinciden con los titulares de la escritura."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "Diego Ignacio Conderanne: nombre coincide con DNI presentado. Maria Fernanda Terzian: nombre coincide con DNI presentado."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "UIF se firma en escritura, no aplica."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "Diego Ignacio Conderanne: DNI 17.141.282 en autorización coincide con DNI físico presentado. Maria Fernanda Terzian: DNI 18.313.659 en autorización coincide con DNI físico presentado."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "UIF se firma en escritura, no aplica."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La autorización más reciente (AUTORIZACION MR 2) indica Joaquin V. Gonzalez 3913, UF 4, MATRICULA 15-74656/4. La escritura identifica el inmueble en Joaquin V. Gonzalez 3913/17/25/27, UF 1, MATRICULA FR 15-74656/1. Existe discrepancia en el número de unidad funcional (UF 4 en autorización vs UF 1 en escritura) y en el número de matrícula (/4 vs /1). Requiere verificación."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay poder notarial."
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "DISCREPANCIA EN UNIDAD FUNCIONAL Y MATRÍCULA: La autorización reciente (AUTORIZACION MR 2, firmada 08/07/2026) identifica el inmueble como UF 4, MATRICULA 15-74656/4 en Joaquin V. Gonzalez 3913. La escritura identifica la propiedad como UF 1 (Planta Baja y Planta Alta), MATRICULA FR 15-74656/1 en Joaquin V. Gonzalez 3913/17/25/27. Verificar si se trata del mismo inmueble o de unidades distintas.",
+        "DISCREPANCIA ENTRE AUTORIZACIONES: Existen dos autorizaciones de venta: AUTORIZACION MR (firmada 01/06/2026, dirección Joaquin V. Gonzalez 3929, precio USD 440.000) y AUTORIZACION MR 2 (firmada 08/07/2026, dirección Joaquin V. Gonzalez 3913 UF 4, precio USD 570.000). Son inmuebles distintos con precios distintos. Se toman los datos de la más reciente (AUTORIZACION MR 2) para el análisis principal, pero ambas deben ser revisadas para determinar si corresponden a operaciones separadas.",
+        "INMUEBLE AFECTADO A BIEN DE FAMILIA: Según el acta incluida en la escritura (Acta N° 375667, Matrícula FR 15-74656/1), el inmueble fue afectado al régimen de Bien de Familia (Ley 14.394) en junio de 1995. Verificar si la afectación fue levantada previamente a la venta.",
+        "FECHA DE VENCIMIENTO CALCULADA: Partiendo del 08/07/2026 (feriado nacional), se suma desde el siguiente día hábil. El 09/07/2026 es feriado nacional (Día de la Independencia). Se inicia el conteo desde el 10/07/2026 (también feriado según listado). El primer día hábil es 13/07/2026. Contando 120 días hábiles desde el 08/07/2026 (exclusive), considerando feriados 2026: 09/07, 10/07, 17/08, 12/10, 23/11, 07/12, 08/12, 25/12, la fecha de vencimiento calculada es aproximadamente 23/12/2026.",
+        "SEGUNDA AUTORIZACIÓN (AUTORIZACION MR, 01/06/2026) PARA INMUEBLE EN JOAQUIN V. GONZALEZ 3929: Esta autorización refiere a un inmueble diferente (domicilio 3929, sin número de UF ni matrícula explícita en el cuerpo del texto, precio USD 440.000). Si este expediente corresponde exclusivamente al inmueble de la calle 3913, la autorización del 01/06/2026 puede ser documentación de otro expediente adjuntada por error."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "mrtr030tmdyub0",
     "fecha": "2026-07-20T21:40:05.837Z",
     "agente": "Mateo Gómez",
