@@ -255,6 +255,8 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
   "veredicto": "APTO" or "OBSERVADO" or "RECHAZADO"
 }
 
+FORMATO DE RESPUESTA (obligatorio): Tu respuesta completa debe ser el JSON y nada más. El primer carácter de tu respuesta tiene que ser '{' y el último '}'. No escribas ningún razonamiento, explicación, resumen ni análisis en texto antes o después del JSON, ni uses bloques de código markdown. Si necesitás pensar en los documentos antes de responder, hacelo mentalmente, pero la respuesta que envíes debe ser exclusivamente el JSON.
+
 REGLAS CRÍTICAS:
 
 TIPO DE OPERACIÓN: Determiná "tipo_operacion" leyendo la Autorización. VENTA si dice "autorización de venta", "vender", "venta del inmueble", o similar. LOCACION si dice "autorización de locación", "alquiler", "arrendamiento", "locar", "canon locativo", o similar. Usá este valor para adaptar la terminología del análisis.
@@ -670,11 +672,13 @@ function App() {
           model: "claude-sonnet-4-6",
           max_tokens: 8000,
           system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
-          // El mensaje de assistant "{" al final fuerza a que la respuesta empiece
-          // directamente con el JSON (prefill), sin que el modelo agregue texto de
-          // razonamiento previo ("Voy a analizar los documentos...") que antes podía
-          // consumir el límite de tokens y truncar el JSON a mitad de camino.
-          messages: [{ role: "user", content }, { role: "assistant", content: "{" }]
+          // Este modelo no soporta prefill de mensaje de assistant (devuelve error
+          // "This model does not support assistant message prefill..."), así que la
+          // conversación tiene que terminar en un mensaje de user. Para evitar el
+          // texto de razonamiento previo ("Voy a analizar los documentos...") que
+          // podía consumir el límite de tokens y truncar el JSON, el system prompt
+          // ahora exige explícitamente que la respuesta empiece con "{".
+          messages: [{ role: "user", content }]
         })
       });
       if (res.status === 401) return;
@@ -686,7 +690,7 @@ function App() {
         }
         throw new Error(typeof data.error === "string" ? data.error : data.error.message);
       }
-      const raw = "{" + data.content.map(i => i.text || "").join("").replace(/```json|```/g, "").trim();
+      const raw = data.content.map(i => i.text || "").join("").replace(/```json|```/g, "").trim();
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
         const motivo = data.stop_reason === "max_tokens" ? " (la respuesta se cortó por límite de tokens)" : "";
