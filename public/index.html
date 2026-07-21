@@ -675,7 +675,13 @@ function App() {
       });
       if (res.status === 401) return;
       const data = await res.json();
-      if (data.error) throw new Error(typeof data.error === "string" ? data.error : data.error.message);
+      if (data.error) {
+        const tipoError = typeof data.error === "string" ? null : data.error.type;
+        if (tipoError === "overloaded_error" || tipoError === "rate_limit_error" || tipoError === "api_error") {
+          throw new Error("El servicio de análisis está saturado en este momento (ya se reintentó automáticamente varias veces). Esperá unos segundos y volvé a intentar.");
+        }
+        throw new Error(typeof data.error === "string" ? data.error : data.error.message);
+      }
       const raw = data.content.map(i => i.text || "").join("").replace(/```json|```/g, "").trim();
       const jsonMatch = raw.match(/\{[\s\S]*\}/);
       if (!jsonMatch) throw new Error("No se encontró JSON en la respuesta");
