@@ -1,5 +1,153 @@
 [
   {
+    "id": "mruyhhy65d1xj3",
+    "fecha": "2026-07-21T17:57:21.822Z",
+    "agente": "Matias Rizzi",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Joaquin V. Gonzalez 3913, UF 4",
+    "veredicto": "RECHAZADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Departamento / Unidad Funcional",
+        "direccion": "Joaquin V. Gonzalez 3913, UF 4",
+        "localidad": "Villa Devoto, Ciudad Autónoma de Buenos Aires"
+      },
+      "titulares": [
+        {
+          "nombre": "DIEGO IGNACIO CONDERANNE",
+          "dni": "17.141.282"
+        },
+        {
+          "nombre": "MARIA FERNANDA TERZIAN",
+          "dni": "18.313.659"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": true,
+        "uif_en_escritura": true,
+        "valor_autorizado": "USD 570.000",
+        "fecha_firma": "08/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "18/12/2026",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Joaquin V. Gonzalez 3913, UF 4, Barrio de Villa Devoto, CABA, MATRICULA: 15-74656/4",
+        "firmante_nombre": "DIEGO IGNACIO CONDERANNE / MARIA FERNANDA TERZIAN",
+        "firmante_dni": "17.141.282 / 18.313.659"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "DIEGO IGNACIO CONDERANNE",
+            "dni": "17.141.282"
+          },
+          {
+            "nombre": "MARIA FERNANDA TERZIAN",
+            "dni": "18.313.659"
+          }
+        ],
+        "direccion": "Joaquin V. Gonzalez 3913/17/25/27, Planta Baja y Planta Alta, Unidad Funcional 1, Barrio de San Bernardo, Capital Federal",
+        "m2_cubiertos": "86,24 m² (43,28 PB + 42,96 PA)",
+        "m2_semicubiertos": "2,42 m²",
+        "m2_descubiertos": "76,21 m² (28,71 PB + 47,50 PA)",
+        "m2_totales": "164,27 m²",
+        "matricula_rpi": "FR 15-74656/1",
+        "sello_rpi": true
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "Matias Rizzi",
+        "agente_dni": "40.891.013"
+      },
+      "dnis": [
+        {
+          "nombre": "DIEGO IGNACIO CONDERANNE",
+          "numero": "17.141.282"
+        },
+        {
+          "nombre": "MARIA FERNANDA TERZIAN",
+          "numero": "18.313.659"
+        }
+      ],
+      "uifs": [],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "Diego Ignacio Conderanne y Maria Fernanda Terzian figuran como autorizantes en la autorización y como compradores/titulares en la escritura. Coincidencia correcta."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "Diego Ignacio Conderanne (DNI 17.141.282) y Maria Fernanda Terzian (DNI 18.313.659) figuran en los DNIs presentados. Nombres coinciden."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "UIF se firma en escritura, no aplica."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "DNI 17.141.282 de Diego Ignacio Conderanne y DNI 18.313.659 de Maria Fernanda Terzian coinciden exactamente con los documentos de identidad presentados y con los datos del detalle de firmas de Contractia."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "UIF se firma en escritura, no aplica."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": false,
+          "detalle": "La autorización indica UF 4, Matrícula 15-74656/4 (Joaquin V. Gonzalez 3913). La escritura presentada corresponde a la Unidad Funcional 1, Matrícula FR 15-74656/1 (Joaquin V. Gonzalez 3913/17/25/27). La unidad funcional y la matrícula difieren: la autorización es para UF 4 / matrícula /4, pero la escritura es UF 1 / matrícula /1. Se debe verificar si se presentó la escritura correcta correspondiente a la UF 4."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay poder notarial."
+        }
+      },
+      "documentos_faltantes": [
+        "Escritura correspondiente a la UF 4 / Matrícula 15-74656/4 (la presentada corresponde a UF 1 / Matrícula 15-74656/1)"
+      ],
+      "alertas": [
+        "DISCREPANCIA CRÍTICA: La autorización de venta refiere al inmueble Joaquin V. Gonzalez 3913, UF 4, MATRICULA 15-74656/4. La escritura presentada corresponde a la Unidad Funcional 1, Matrícula FR 15-74656/1 (Joaquin V. Gonzalez 3913/17/25/27). Se debe presentar la escritura de la UF 4.",
+        "Se presentaron dos autorizaciones de venta con distintas fechas y distintos inmuebles: AUTORIZACION MR.pdf (01/06/2026) para Joaquin V. Gonzalez 3929 a USD 440.000, y AUTORIZACION MR 2.pdf (08/07/2026) para Joaquin V. Gonzalez 3913 UF 4 a USD 570.000. El análisis se basa en AUTORIZACION MR 2.pdf (la más reciente y la que coincide con la escritura en cuanto a la dirección 3913). La autorización anterior (3929, USD 440.000) podría corresponder a otro inmueble diferente.",
+        "El inmueble figura constituido en Bien de Familia (Acta N° 375667, junio 1995, Matrícula 15-74656/1). Para proceder con la venta será necesario levantar previamente dicha afectación. Verificar estado actual.",
+        "La escritura presentada es de 1994 (adquisición original). Verificar que no existan inscripciones posteriores o modificaciones en el RPI que afecten el dominio.",
+        "La segunda firmante aparece en el Detalle de Firmas de AUTORIZACION MR.pdf como 'FERNANDA CONDERANNE' (usando apellido del esposo) cuando su apellido real es TERZIAN. Inconsistencia menor en el sistema de firma electrónica; los datos del DNI y el cuerpo del documento la identifican correctamente como Maria Fernanda Terzian."
+      ],
+      "veredicto": "RECHAZADO"
+    }
+  },
+  {
     "id": "mruxplv62f2rxv",
     "fecha": "2026-07-21T17:35:40.530Z",
     "agente": "MATIAS RIZZI",
