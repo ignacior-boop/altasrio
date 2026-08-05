@@ -1,5 +1,168 @@
 [
   {
+    "id": "msg5id0jiw47j8",
+    "fecha": "2026-08-05T13:57:09.091Z",
+    "agente": "Agustina Scarinci",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Bulnes 2463",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Casa/Inmueble",
+        "direccion": "Bulnes 2463",
+        "localidad": "El Palomar"
+      },
+      "titulares": [
+        {
+          "nombre": "RUIZ Luis Carlos",
+          "dni": "10.751.601"
+        },
+        {
+          "nombre": "RUIZ Carina Raquel",
+          "dni": "18.140.646"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 67.000",
+        "fecha_firma": "04/08/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "19/01/2027",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Bulnes Número 2463, El Palomar, Provincia de Buenos Aires",
+        "firmante_nombre": "RUIZ Luis Carlos y RUIZ Carina Raquel",
+        "firmante_dni": "10.751.601 / 18.140.646"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "RUIZ Jorge Oscar",
+            "dni": "11.594.802"
+          }
+        ],
+        "direccion": "Bulnes 2463, Haedo, Partido de Morón, Provincia de Buenos Aires",
+        "m2_cubiertos": null,
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "125,37 m²",
+        "matricula_rpi": "106.842 (Partido Morón)",
+        "sello_rpi": true
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "Agustina Scarinci",
+        "agente_dni": "34.401.153"
+      },
+      "dnis": [
+        {
+          "nombre": "RUIZ Luis Carlos",
+          "numero": "10.751.601"
+        },
+        {
+          "nombre": "RUIZ Carina Raquel",
+          "numero": "18.140.646"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "RUIZ Carina Raquel",
+          "dni": "18.140.646",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        },
+        {
+          "nombre": "RUIZ Luis Carlos",
+          "dni": "10.751.601",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": true,
+        "herederos": [
+          {
+            "nombre": "Luis Carlos RUIZ",
+            "dni": "10.751.601"
+          },
+          {
+            "nombre": "Carina Raquel RUIZ",
+            "dni": "18.140.646"
+          }
+        ]
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "Con declaratoria de herederos la escritura está a nombre del causante (Jorge Oscar Ruiz), no aplica comparación directa con los autorizantes herederos."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "Luis Carlos Ruiz figura en autorización con DNI 10.751.601 y coincide con el DNI presentado. Carina Raquel Ruiz figura en autorización con DNI 18.140.646 y coincide con el DNI presentado."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "Luis Carlos Ruiz figura en UIF (ficha + PEP). Carina Raquel Ruiz figura en UIF (ficha + PEP). Ambos coinciden con los firmantes de la autorización."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "DNI 10.751.601 de Luis Carlos Ruiz coincide entre autorización y documento de identidad presentado. DNI 18.140.646 de Carina Raquel Ruiz coincide entre autorización y documento de identidad presentado."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "DNI 10.751.601 de Luis Carlos Ruiz coincide en UIF. DNI 18.140.646 de Carina Raquel Ruiz coincide en UIF."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La autorización indica Bulnes 2463, El Palomar. La escritura indica Bulnes 2463, Haedo, Partido de Morón. El oficio judicial también confirma Bulnes 2463, Haedo, Partido de Morón. La denominación 'El Palomar' y 'Haedo' refieren a la misma zona dentro del Partido de Morón; las direcciones son coincidentes."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "La declaratoria de herederos designa como herederos universales de Jorge Oscar Ruiz (titular en escritura, matrícula 106.842) a Luis Carlos Ruiz y Carina Raquel Ruiz, coincidiendo con la escritura de compraventa original a nombre del causante y con el oficio de inscripción."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "Los dos herederos declarados (Luis Carlos Ruiz y Carina Raquel Ruiz) firman la autorización electrónicamente en Contractia con código de auditoría ff6160b0-2ff4-4098-9cce-7bc2978daf62, que aparece en el encabezado de todas las páginas del documento. Ambos firman válidamente."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No se presentó poder notarial."
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "El DNI de Carina Raquel Ruiz (18.140.646) presenta fecha de vencimiento 16 ABR 2025, anterior a la fecha de firma de la autorización (04/08/2026). Se recomienda solicitar DNI actualizado o vigente.",
+        "La autorización indica la matrícula RPI como vacía ('MATRÍCULA: ………………….'). Según el oficio judicial y la escritura, la matrícula correcta es 106.842 del Partido de Morón (101). Se recomienda completar ese campo en la autorización.",
+        "La autorización menciona que la operación se realizará por TRACTO ABREVIADO y que la propiedad NO está hipotecada con cancelación al momento de escritura. Sin embargo, la escritura original menciona una 'cláusula de inembargabilidad subsistente sobre el inmueble vendido por la hipoteca folio 211/año 1982'. Verificar el estado actual de dicha hipoteca/cláusula con el RPI.",
+        "La autorización consigna domicilio de los autorizantes en Riobamba número 107. Los DNIs y formularios UIF indican Riobamba 1078. Se recomienda verificar y corregir el número de calle en la autorización."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "mruyhhy65d1xj3",
     "fecha": "2026-07-21T17:57:21.822Z",
     "agente": "Matias Rizzi",
