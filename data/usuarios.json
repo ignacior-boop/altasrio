@@ -22,5 +22,11 @@
     "passwordHash": "$2a$10$2Ze23MBhOFd5bFtCrLcAy.XZ4FV81skAAudxtHTolToO2HL5hYDom",
     "nombre": "Florencia Scrigna",
     "rol": "staff"
+  },
+  {
+    "username": "FAGOMEZ",
+    "passwordHash": "$2a$10$xpiDyYG8CV5MHbwbe5F8nueFyuoex8vcdzdVkPsg.hMseIFQ.6pL.",
+    "nombre": "Facundo Gomez",
+    "rol": "staff"
   }
 ]
