@@ -113,6 +113,26 @@ html, body { background: var(--bg); color: var(--fg); font-family: var(--font); 
 .checkrow__icon { flex-shrink: 0; margin-top: 1px; width: 20px; height: 20px; display: grid; place-items: center; }
 .checkrow__label { font-size: 14px; font-weight: 600; color: var(--fg-strong); }
 .checkrow__detail { font-size: 12.5px; color: var(--fg-muted); margin-top: 2px; line-height: 1.5; }
+.docs__head { display:flex; align-items:center; justify-content:space-between; width:100%; padding:14px 20px; background:var(--surface-muted); border:none; border-bottom:1px solid var(--border); cursor:pointer; font-family:inherit; text-align:left; }
+.docs__head .card__title { padding:0; background:none; border:none; }
+.docs__toggle { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--fg-muted); }
+.docs__chev { transition:transform .2s; }
+.docs__chev--open { transform:rotate(180deg); }
+.docs__chips { display:flex; flex-wrap:wrap; gap:8px; padding:14px 20px 4px; align-items:center; }
+.docs__chip { font-size:12px; font-weight:700; padding:5px 12px; border-radius:999px; }
+.docs__chip--ok { background:#E7F5ED; color:#1E7A45; } .docs__chip--obs { background:#FDF3DC; color:#9A6B05; } .docs__chip--err { background:#FBE6E6; color:#A82F2F; }
+.docs__meta { font-size:12px; color:var(--fg-muted); padding:0 20px 8px; }
+.docrow { margin:8px 20px; border:1px solid var(--border); border-radius:10px; overflow:hidden; background:#fff; }
+.docrow--obs { background:#FFFCF3; border-color:#F1DFAE; } .docrow--err { background:#FFF8F8; border-color:#F3C9C9; }
+.docrow__head { display:flex; align-items:center; gap:12px; width:100%; padding:11px 14px; background:none; border:none; font-family:inherit; text-align:left; cursor:default; }
+.docrow__head--click { cursor:pointer; }
+.docrow__name { font-size:14px; font-weight:700; color:var(--fg-strong); }
+.docrow__sub { font-size:12.5px; color:var(--fg-muted); margin-top:1px; }
+.docrow__body { padding:2px 16px 12px 52px; border-top:1px solid rgba(0,0,0,.06); }
+.docrow__body li { font-size:13px; color:var(--fg-strong); line-height:1.5; margin-top:8px; }
+.docrow--obs .docrow__body li::marker { color:#E8A317; } .docrow--err .docrow__body li::marker { color:#D64545; }
+.docs__legend { display:flex; flex-wrap:wrap; gap:18px; padding:10px 20px 16px; font-size:12px; color:var(--fg-muted); align-items:center; }
+.docs__legend span { display:inline-flex; align-items:center; gap:6px; }
 .pill-na { display: inline-block; background: var(--surface-muted); color: var(--fg-muted); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
 .info-strip { grid-column: span 2; padding: 11px 20px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
 .info-strip.blue { background: #EEF3FF; color: var(--rm-blue-deep); }
@@ -335,6 +355,140 @@ function IconCheck() { return <svg width="18" height="18" viewBox="0 0 24 24" fi
 function IconX() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#C0392B"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
 function IconWarn() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3l9 16H3L12 3z" fill="#B45309"/><path d="M12 9v5M12 16.5v.5" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
 function IconNA() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#D8D3C6"/><path d="M7 12h10" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>; }
+
+function DocBadge({ kind }) {
+  const bg = kind === "ok" ? "#2E9E5B" : kind === "obs" ? "#E8A317" : "#D64545";
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{flexShrink:0}}><circle cx="12" cy="12" r="12" fill={bg}/>
+    {kind === "ok" && <path d="M6.5 12.5l3.5 3.5 7.5-8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>}
+    {kind === "err" && <path d="M8 8l8 8M16 8l-8 8" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/>}
+    {kind === "obs" && <g stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="6.5"/><path d="M12 8.5V12l2.5 1.5"/></g>}
+  </svg>;
+}
+function DocChev({ open }) {
+  return <svg className={"docs__chev" + (open ? " docs__chev--open" : "")} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7785" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6"/></svg>;
+}
+
+// Arma la lista de documentos a partir del resultado del análisis (sin pedirle nada nuevo a la IA).
+// Devuelve { rows, restAlertas }. Cada fila: { name, sub, status: "ok"|"obs"|"err", notes: [] }
+function buildDocChecklist(r) {
+  const norm = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const cr = r.cruces || {};
+  const au = r.autorizacion || {};
+  const fallan = keys => keys.filter(k => cr[k] && cr[k].aplica !== false && cr[k].ok === false)
+    .map(k => (CRUCES_LABELS[k] || k) + ": " + (cr[k].detalle || "no coincide"));
+  const faltantes = (r.documentos_faltantes || []).slice();
+  const takeFaltantes = test => { const out = []; for (let i = faltantes.length - 1; i >= 0; i--) if (test(norm(faltantes[i]))) out.unshift(faltantes.splice(i, 1)[0]); return out; };
+  const alertas = (r.alertas || []).map(a => ({ a, used: false }));
+  const takeAlertas = (re, nameHint) => alertas.filter(x => !x.used && re.test(norm(x.a)) && (!nameHint || norm(x.a).includes(norm(nameHint)))).map(x => { x.used = true; return x.a; });
+  const rows = [];
+  const mk = (name, presentado, notes, subOk) => {
+    const status = !presentado ? "err" : notes.length ? "obs" : "ok";
+    const n = notes.length;
+    const sub = !presentado ? "No presentado" + (n ? " · " + n + (n === 1 ? " error" : " errores") : "")
+      : n ? "Presentado · " + n + (n === 1 ? " advertencia" : " advertencias") : (subOk || "Presentado");
+    rows.push({ name, sub, status, notes });
+  };
+
+  // Autorización
+  const fVenc = au.fecha_vencimiento_calculada;
+  mk("Autorización de " + (au.tipo_operacion === "LOCACION" ? "locación" : "venta"), au.encontrada !== false,
+    [...takeAlertas(/autorizacion|vencim|plazo|comision|firma(nte)? /)],
+    fVenc ? "Presentada · vence " + fVenc : "Presentada");
+
+  // DNI
+  const dnisFalt = takeFaltantes(f => /^dni\b/.test(f));
+  const dnis = r.dnis || [];
+  const failDni = fallan(["nombre_autorizacion_vs_dni", "dni_autorizacion_vs_dni"]);
+  dnis.forEach((d, i) => {
+    const notes = [];
+    if (i === 0) notes.push(...failDni);
+    notes.push(...takeAlertas(/\bdni\b|documento de identidad/, d.nombre));
+    mk("DNI de " + (d.nombre || "titular"), true, notes, d.numero ? "Presentado · " + d.numero : "Presentado");
+  });
+  if (dnis.length && alertas.some(x => !x.used && /\bdni\b/.test(norm(x.a)))) {
+    rows.filter(x => x.name.startsWith("DNI de")).slice(0, 1).forEach(x => { x.notes.push(...takeAlertas(/\bdni\b/)); x.status = "obs"; x.sub = "Presentado · " + x.notes.length + (x.notes.length === 1 ? " advertencia" : " advertencias"); });
+  }
+  dnisFalt.forEach(f => mk(f, false, ["Falta presentar este documento."]));
+
+  // UIF
+  const uifFalt = takeFaltantes(f => /uif/.test(f));
+  if (au.uif_en_escritura) {
+    mk("Formulario UIF", true, [], "Se firma en la escritura");
+  } else {
+    const failUif = fallan(["nombre_autorizacion_vs_uif", "dni_autorizacion_vs_uif"]);
+    (r.uifs || []).forEach((u, i) => {
+      const notes = [];
+      if (i === 0) notes.push(...failUif);
+      if (u.pep_completado === false) notes.push("La declaración PEP no está completada.");
+      if (u.pep_resultado === "SI") notes.push("Declara ser Persona Expuesta Políticamente (PEP): revisar.");
+      notes.push(...takeAlertas(/uif|\bpep\b/, u.nombre));
+      mk("Formulario UIF de " + (u.nombre || "titular"), true, notes);
+    });
+    uifFalt.forEach(f => mk(f, false, ["Falta presentar este documento."]));
+  }
+
+  // Escritura
+  const esc = r.escritura || {};
+  const escFalt = takeFaltantes(f => /escritura/.test(f));
+  if (esc.encontrada || esc.requerida || escFalt.length) {
+    const notes = [...fallan(["nombre_autorizacion_vs_escritura", "direccion_autorizacion_vs_escritura", "declaratoria_vs_escritura"]), ...takeAlertas(/escritura|m2|m²|matricula|rpi|sello|superficie/)];
+    mk("Escritura", !!esc.encontrada, esc.encontrada ? notes : ["Falta presentar este documento."], esc.matricula_rpi ? "Presentada · matrícula " + esc.matricula_rpi : "Presentada");
+  }
+
+  // Documentos condicionales (solo si se presentaron)
+  if (r.declaratoria && r.declaratoria.encontrada)
+    mk("Declaratoria de herederos", true, [...fallan(["declaratoria_vs_autorizacion"]), ...takeAlertas(/declaratoria|heredero/)]);
+  if (r.poder && r.poder.encontrado) {
+    const notes = [...fallan(["poder_habilita_firmante"]), ...takeAlertas(/poder|apoderado/)];
+    if (r.poder.vigente === false) notes.unshift("El poder no está vigente.");
+    mk("Poder notarial", true, notes);
+  }
+
+  // Cualquier otro faltante que no encaje arriba
+  faltantes.forEach(f => mk(f, false, ["Falta presentar este documento."]));
+
+  return { rows, restAlertas: alertas.filter(x => !x.used).map(x => x.a) };
+}
+
+function DocsObligatorios({ rows }) {
+  const [open, setOpen] = React.useState(true);
+  const [openRows, setOpenRows] = React.useState(() => { const o = {}; rows.forEach((x, i) => { if (x.status === "err") o[i] = true; }); return o; });
+  const cnt = s => rows.filter(x => x.status === s).length;
+  const presentados = rows.filter(x => x.status !== "err").length;
+  return (
+    <div className="card">
+      <button className="docs__head" onClick={() => setOpen(o => !o)} aria-expanded={open}>
+        <span className="card__title">Documentos obligatorios</span>
+        <span className="docs__toggle">{open ? "Ocultar" : "Ver detalle"}<DocChev open={open}/></span>
+      </button>
+      {open && (<div>
+        <div className="docs__chips">
+          {cnt("ok") > 0 && <span className="docs__chip docs__chip--ok">{cnt("ok")} {cnt("ok") === 1 ? "correcto" : "correctos"}</span>}
+          {cnt("obs") > 0 && <span className="docs__chip docs__chip--obs">{cnt("obs")} {cnt("obs") === 1 ? "observado" : "observados"}</span>}
+          {cnt("err") > 0 && <span className="docs__chip docs__chip--err">{cnt("err")} con error</span>}
+        </div>
+        <div className="docs__meta">{rows.length} requeridos · {presentados} presentados</div>
+        {rows.map((x, i) => {
+          const has = x.notes.length > 0;
+          const isOpen = !!openRows[i];
+          return (
+            <div key={i} className={"docrow docrow--" + x.status}>
+              <button className={"docrow__head" + (has ? " docrow__head--click" : "")} onClick={() => has && setOpenRows(o => ({ ...o, [i]: !o[i] }))} aria-expanded={has ? isOpen : undefined}>
+                <DocBadge kind={x.status}/>
+                <span style={{flex:1}}><div className="docrow__name">{x.name}</div><div className="docrow__sub">{x.sub}</div></span>
+                {has && <DocChev open={isOpen}/>}
+              </button>
+              {has && isOpen && <ul className="docrow__body">{x.notes.map((n, j) => <li key={j}>{n}</li>)}</ul>}
+            </div>
+          );
+        })}
+        <div className="docs__legend">
+          <span><DocBadge kind="ok"/>Correcto</span><span><DocBadge kind="obs"/>Observado</span><span><DocBadge kind="err"/>Con error / faltante</span>
+        </div>
+      </div>)}
+    </div>
+  );
+}
 function IconUpload() { return <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 16V4M12 4l-5 5M12 4l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>; }
 function IconEye() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/></svg>; }
 function IconEyeOff() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 3l18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/><path d="M10.6 5.1A11.6 11.6 0 0112 5c7 0 11 7 11 7a14.4 14.4 0 01-3.2 3.9M6.5 6.6C3.5 8.4 1 12 1 12s4 7 11 7a10.6 10.6 0 004.6-1.1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><path d="M9.9 10a3 3 0 004.2 4.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
@@ -1095,11 +1249,7 @@ function App() {
                   </div>
                 )}
 
-                <div className="card">
-                  <div className="card__title">Documentos obligatorios</div>
-                  {(r.documentos_faltantes||[]).length === 0 ? <CR status="ok" label="Todos los documentos obligatorios presentes"/> :
-                    r.documentos_faltantes.map((f,i) => <CR key={i} status="err" label={f}/>)}
-                </div>
+                {(() => { const ck = buildDocChecklist(r); return <DocsObligatorios key={JSON.stringify(ck.rows.map(x => x.name + x.status))} rows={ck.rows}/>; })()}
 
                 <div className="card">
                   <div className="card__title">Verificación cruzada</div>
@@ -1109,10 +1259,10 @@ function App() {
                   })}
                 </div>
 
-                {(r.alertas||[]).length > 0 && (
+                {buildDocChecklist(r).restAlertas.length > 0 && (
                   <div className="card">
                     <div className="card__title">Alertas</div>
-                    {r.alertas.map((a,i) => <CR key={i} status="warn" label={a}/>)}
+                    {buildDocChecklist(r).restAlertas.map((a,i) => <CR key={i} status="warn" label={a}/>)}
                   </div>
                 )}
 
