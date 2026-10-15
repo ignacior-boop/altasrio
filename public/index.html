@@ -283,7 +283,7 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
 BREVEDAD (obligatoria; tiene prioridad sobre los textos de "detalle" indicados más abajo):
 - Devolvé el JSON compacto, en una sola línea, sin saltos de línea ni espacios de indentación.
 - En "cruces": si ok=true, detalle="" (vacío). Si aplica=false, ok=null y detalle="" (vacío; no escribas "No aplica" ni explicaciones). Si ok=false, detalle de hasta 25 palabras con los valores que no coinciden.
-- Cada alerta: una sola frase de hasta 25 palabras. Solo alertas que requieran una acción o revisión; no repitas lo que ya figura en un cruce con ok=false ni en documentos_faltantes, y no agregues alertas meramente informativas.
+- Cada alerta: una sola frase de hasta 25 palabras. Solo alertas que requieran una acción o revisión (informá SIEMPRE: hipotecas, embargos, bien de familia u otros gravámenes mencionados, discrepancias de precio o de datos entre documentos, obras sin permiso y dudas sobre firmas o vigencia); no repitas lo que ya figura en un cruce con ok=false ni en documentos_faltantes, y no agregues alertas meramente informativas.
 - "detalle" del reglamento y del plano: hasta 20 palabras, o null.
 - No agregues campos que no estén en la estructura.
 
@@ -842,7 +842,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: new URLSearchParams(window.location.search).get("modelo") === "haiku" ? "claude-haiku-4-5-20251001" : "claude-sonnet-4-6",
+          model: "claude-sonnet-4-6",
           max_tokens: 8000,
           system: [{ type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } }],
           // Este modelo no soporta prefill de mensaje de assistant (devuelve error
