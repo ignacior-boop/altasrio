@@ -1,5 +1,147 @@
 [
   {
+    "id": "mv9xtjqz2orj5e",
+    "fecha": "2026-10-15T19:34:24.059Z",
+    "agente": "CANDELA CARRIZO",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Belisario Roldán 772",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Casa",
+        "direccion": "Belisario Roldán 772",
+        "localidad": "El Palomar"
+      },
+      "titulares": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "5.067.775"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 115.000",
+        "fecha_firma": "10/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "23/12/2026",
+        "comision_porcentaje": "3% más IVA",
+        "direccion": "Belisario Roldán 772, El Palomar, Buenos Aires",
+        "firmante_nombre": "JOSÉ RUBÉN ARNAUDO",
+        "firmante_dni": "5.067.775"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "JOSÉ RUBÉN ARNAUDO",
+            "dni": "5.067.775"
+          }
+        ],
+        "direccion": "Belisario Roldán 772, El Palomar (antes Haedo), Partido de Morón, Buenos Aires",
+        "m2_cubiertos": "158,93 m²",
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "237,50 m² (terreno total)",
+        "matricula_rpi": "128.547 (Partido de Morón 101)",
+        "sello_rpi": true
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "CANDELA CARRIZO",
+        "agente_dni": "46.091.745"
+      },
+      "dnis": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "numero": "5.067.775"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "5.067.775",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El firmante de la autorización (JOSÉ RUBÉN ARNAUDO) coincide con el titular en la escritura."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El nombre del firmante (JOSÉ RUBÉN ARNAUDO) coincide con el DNI presentado a nombre de JOSE RUBEN ARNAUDO."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El nombre del firmante (JOSÉ RUBÉN ARNAUDO) coincide con el formulario UIF presentado a nombre de José Ruben Arnaudo."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El DNI declarado en la autorización (5.067.775) coincide con el número del DNI presentado (M5.067.775)."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El DNI declarado en la autorización (5.067.775) coincide con el DNI del formulario UIF (05067775)."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La dirección en la autorización (Belisario Roldán 772, El Palomar) coincide con la escritura (Belisario Roldán 772, El Palomar/Haedo, Partido de Morón)."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay poder notarial presentado."
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "El precio autorizado en la autorización es USD 115.000, pero existe un correo electrónico de Jose Arnaudo del 21/08/2026 autorizando bajar el precio a USD 111.000. Este ajuste de precio no está formalizado en un addendum o modificación firmada de la autorización. Se recomienda documentar formalmente la baja de precio.",
+        "El formulario UIF indica el monto de la operación como USD 115.000, mientras que el correo de baja de precio establece USD 111.000. Verificar y actualizar el formulario UIF si corresponde.",
+        "La escritura fue otorgada en 2017 como compraventa a favor de JOSÉ RUBÉN ARNAUDO. Verificar que no existan gravámenes o hipotecas vigentes al momento de la operación actual (la escritura menciona que la propiedad estaba hipotecada según la autorización).",
+        "La autorización menciona que la propiedad está hipotecada y que la cancelación se hará al momento de la firma de la escritura traslativa de dominio. Se recomienda solicitar certificado actualizado de estado registral del inmueble.",
+        "La venta está condicionada a la reubicación del autorizante, quien necesitará aproximadamente 30 días para concretar reserva y deberá firmar un comodato por aproximadamente 30 días tras la escritura traslativa. Tener en cuenta estas condiciones al momento de conformar reservas.",
+        "El DNI del firmante en la autorización figura como 5.067.775, pero en el encabezado de la autorización se lee 'M5.067.775' o similar con variantes de lectura. El DNI físico dice M5.067.775 y el UIF dice 05067775. Los tres refieren al mismo número, no hay inconsistencia real."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "msg5id0jiw47j8",
     "fecha": "2026-08-05T13:57:09.091Z",
     "agente": "Agustina Scarinci",
