@@ -1278,6 +1278,15 @@ function App() {
   );
 }
 
+// Mantiene viva la sesión mientras el usuario interactúa con la página.
+// Cargar archivos no pasa por el servidor, así que sin esto la sesión de 40 min de inactividad
+// podía vencer aunque la persona estuviera trabajando.
+(function () {
+  let last = 0;
+  const ping = () => { const n = Date.now(); if (n - last < 120000) return; last = n; fetch("/api/me").catch(() => {}); };
+  ["click", "keydown", "change", "drop", "scroll", "touchstart", "mousemove"].forEach(ev => window.addEventListener(ev, ping, { passive: true, capture: true }));
+})();
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
 </script>
 </body>
