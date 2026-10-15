@@ -98,7 +98,7 @@ function puedeGestionar(actorRol, targetRol) {
 
 function requireAuth(req, res, next) {
   const token = req.cookies?.rm_session;
-  if (!token) return res.status(401).json({ error: "No autenticado" });
+  if (!token) { console.warn("Sin cookie de sesión (" + req.method + " " + req.path + ")"); return res.status(401).json({ error: "No autenticado" }); }
   try {
     const payload = jwt.verify(token, SESSION_SECRET);
     req.user = payload;
@@ -107,7 +107,7 @@ function requireAuth(req, res, next) {
     next();
   } catch (e) {
     res.clearCookie("rm_session");
-    res.status(401).json({ error: "Sesión inválida o expirada" });
+    console.warn("Sesión rechazada (" + req.method + " " + req.path + "): " + e.message); res.status(401).json({ error: "Sesión inválida o expirada" });
   }
 }
 
@@ -324,7 +324,8 @@ app.post("/api/analizar", requireAuth, async (req, res) => {
       }
       break;
     }
-    res.status(response.status).json(data);
+    if (!response.ok) { console.error("Anthropic respondió " + response.status + ":", JSON.stringify(data && data.error ? data.error : data).slice(0, 300)); if (response.status === 401 || response.status === 403) return res.status(502).json({ error: "El servicio de análisis rechazó las credenciales (revisar la API key de Anthropic en el servidor). Tu sesión sigue activa." }); }
+res.status(response.status).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
