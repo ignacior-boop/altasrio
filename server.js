@@ -324,7 +324,8 @@ app.post("/api/analizar", requireAuth, async (req, res) => {
       }
       break;
     }
-    if (!response.ok) { console.error("Anthropic respondió " + response.status + ":", JSON.stringify(data && data.error ? data.error : data).slice(0, 300)); if (response.status === 401 || response.status === 403) return res.status(502).json({ error: "El servicio de análisis rechazó las credenciales (revisar la API key de Anthropic en el servidor). Tu sesión sigue activa." }); }
+    if (data && data.usage) { const cont = req.body && req.body.messages && req.body.messages[0] && req.body.messages[0].content; console.log("Tokens:", JSON.stringify({ modelo: data.model, entrada: data.usage.input_tokens, salida: data.usage.output_tokens, cache_lectura: data.usage.cache_read_input_tokens || 0, cache_escritura: data.usage.cache_creation_input_tokens || 0, docs: Array.isArray(cont) ? cont.length : null, stop: data.stop_reason })); }
+if (!response.ok) { console.error("Anthropic respondió " + response.status + ":", JSON.stringify(data && data.error ? data.error : data).slice(0, 300)); if (response.status === 401 || response.status === 403) return res.status(502).json({ error: "El servicio de análisis rechazó las credenciales (revisar la API key de Anthropic en el servidor). Tu sesión sigue activa." }); }
 res.status(response.status).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
