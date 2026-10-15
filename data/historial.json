@@ -1,5 +1,159 @@
 [
   {
+    "id": "mv9ydzrpgrs0tf",
+    "fecha": "2026-10-15T19:50:17.941Z",
+    "agente": "CANDELA CARRIZO",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Belisario Roldán 772",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Casa",
+        "direccion": "Belisario Roldán 772",
+        "localidad": "El Palomar"
+      },
+      "titulares": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "5.067.775"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 115.000",
+        "fecha_firma": "10/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "23/12/2026",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Belisario Roldán 772, El Palomar, Provincia de Buenos Aires",
+        "firmante_nombre": "JOSÉ RUBÉN ARNAUDO",
+        "firmante_dni": "5.067.775"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "JOSÉ RUBÉN ARNAUDO",
+            "dni": "5.067.775"
+          }
+        ],
+        "direccion": "Belisario Roldán 772, El Palomar (antes Haedo), Partido de Morón, Provincia de Buenos Aires",
+        "m2_cubiertos": null,
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "237,50 m²",
+        "matricula_rpi": "128.547",
+        "sello_rpi": true
+      },
+      "plano": {
+        "encontrado": true,
+        "m2_cubiertos": "158,93 m²",
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "237,50 m²",
+        "detalle": "Plano de obra existente y sin permiso, destino vivienda, propiedad de Rita Delfina Ledesma, registrado el 21/12/1979. Profesional: Aldo H. Springolo, M.M. de Obras Mat. C.P.I. A-5914."
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "CANDELA CARRIZO",
+        "agente_dni": "46.091.745"
+      },
+      "dnis": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "numero": "5.067.775"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "5.067.775",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El firmante de la autorización (JOSÉ RUBÉN ARNAUDO) coincide con el titular en la escritura."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El firmante de la autorización (JOSÉ RUBÉN ARNAUDO) coincide con el nombre en el DNI presentado."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El firmante de la autorización (JOSÉ RUBÉN ARNAUDO) coincide con el nombre en el formulario UIF presentado."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El DNI declarado en la autorización (5.067.775) coincide con el número en el DNI presentado (5.067.775)."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El DNI declarado en la autorización (5.067.775) coincide con el número en el formulario UIF (05067775)."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La dirección en la autorización (Belisario Roldán 772, El Palomar) coincide con la de la escritura (Belisario Roldán 772, El Palomar/Haedo, Partido de Morón)."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay poder notarial."
+        },
+        "m2_escritura_vs_plano": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "La superficie total del terreno en la escritura (237,50 m²) coincide con la del plano (237,50 m²). La superficie cubierta total del plano es 158,93 m²; la escritura no desglosa superficie cubierta por separado, por lo que no se compara ese ítem."
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "El valor autorizado en la autorización es USD 115.000, pero existe un email de baja de precio (documento BAJA DE PRECIO CQC.pdf) del 21/08/2026 en el que el titular autoriza bajar el precio a USD 111.000. Esta reducción no está instrumentada en una adenda formal a la autorización; se recomienda formalizar la modificación del precio mediante una adenda firmada.",
+        "La autorización menciona que la propiedad está hipotecada y que la cancelación se hará al momento de la firma de la escritura traslativa de dominio. Verificar estado actual de la hipoteca y gestionar cancelación previa al acto escriturario.",
+        "La escritura indica la superficie total del terreno (237,50 m²) pero no desglosa superficie cubierta ni descubierta. El plano registra cubierta total de 158,93 m² (aprobada 123,62 m² + sin permiso 35,31 m²). Verificar que la situación de la obra sin permiso esté regularizada antes de la escritura traslativa.",
+        "El domicilio declarado en la autorización (Belisario Roldán 772, El Palomar) coincide con el inmueble a vender, no con la residencia actual del titular. En la escritura consta domicilio en Yapeyú 2414, Moreno. Verificar domicilio real actualizado del titular.",
+        "El monto en el formulario UIF (USD 115.000) no refleja la baja de precio autorizada por email (USD 111.000). Se recomienda actualizar el formulario UIF con el nuevo valor de operación."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "mv9y9psrwfs8cj",
     "fecha": "2026-10-15T19:46:58.395Z",
     "agente": "CANDELA CARRIZO",
