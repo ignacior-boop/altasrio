@@ -301,7 +301,7 @@ app.post("/api/analizar", requireAuth, async (req, res) => {
   try {
     let data, response;
     for (let intento = 0; intento < ANALIZAR_MAX_INTENTOS; intento++) {
-      response = await fetch("https://api.anthropic.com/v1/messages", {
+      try { response = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -310,7 +310,11 @@ app.post("/api/analizar", requireAuth, async (req, res) => {
         },
         body: JSON.stringify(req.body)
       });
-      data = await response.json();
+      data = await response.json(); } catch (netErr) {
+ console.error("Error de red hacia Anthropic (intento " + (intento + 1) + "):", netErr.message, netErr.cause ? (netErr.cause.code || netErr.cause.message) : "");
+ if (intento < ANALIZAR_MAX_INTENTOS - 1) { await sleep(ANALIZAR_REINTENTO_MS[intento] || 5000); continue; }
+ return res.status(502).json({ error: "No se pudo conectar con el servicio de análisis. Probá de nuevo en unos segundos." });
+ }
 
       const tipoError = data?.error?.type;
       const esUltimoIntento = intento === ANALIZAR_MAX_INTENTOS - 1;
