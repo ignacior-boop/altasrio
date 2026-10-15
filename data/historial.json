@@ -1,5 +1,162 @@
 [
   {
+    "id": "mva0zj5efbt8zj",
+    "fecha": "2026-10-15T21:03:02.066Z",
+    "agente": "Matias Rizzi",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Joaquin V. Gonzalez 3913, UF 4",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Departamento",
+        "direccion": "Joaquin V. Gonzalez 3913, UF 4",
+        "localidad": "Villa Devoto, Ciudad Autónoma de Buenos Aires"
+      },
+      "titulares": [
+        {
+          "nombre": "Diego Ignacio Condéranne",
+          "dni": "17.141.282"
+        },
+        {
+          "nombre": "Maria Fernanda Terzian",
+          "dni": "18.313.659"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": true,
+        "uif_en_escritura": true,
+        "valor_autorizado": "USD 570.000",
+        "fecha_firma": "08/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "23/12/2026",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Joaquin V. Gonzalez 3913, UF 4, Villa Devoto, CABA",
+        "firmante_nombre": "Diego Ignacio Condéranne y Maria Fernanda Terzian",
+        "firmante_dni": "17.141.282 y 18.313.659"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "Diego Ignacio Conderanne",
+            "dni": "17.141.282"
+          },
+          {
+            "nombre": "María Fernanda Terzian",
+            "dni": "18.313.659"
+          }
+        ],
+        "direccion": "Joaquin V. Gonzalez 3913/17/25/27, UF 1, Villa Devoto, CABA",
+        "m2_cubiertos": "86,24 m² (PB 43,28 + PA 42,96)",
+        "m2_semicubiertos": "2,42 m²",
+        "m2_descubiertos": "76,21 m² (PB 28,71 + PA 47,50)",
+        "m2_totales": "164,27 m²",
+        "matricula_rpi": "FR 15-74656/1",
+        "sello_rpi": true
+      },
+      "plano": {
+        "encontrado": false,
+        "m2_cubiertos": null,
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": null,
+        "detalle": null
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "Matias Rizzi",
+        "agente_dni": "40.891.013"
+      },
+      "dnis": [
+        {
+          "nombre": "Diego Ignacio Conderanne",
+          "numero": "17.141.282"
+        },
+        {
+          "nombre": "Maria Fernanda Terzian",
+          "numero": "18.313.659"
+        }
+      ],
+      "uifs": [],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": ""
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": ""
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": ""
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": false,
+          "detalle": "Autorización: JVG 3913 UF4 matrícula 15-74656/4; escritura: UF1 matrícula FR 15-74656/1, numeración 3913/17/25/27."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "m2_escritura_vs_plano": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "Escritura refiere a UF 1 matrícula FR 15-74656/1; autorización indica UF 4 matrícula 15-74656/4: verificar que correspondan al mismo inmueble.",
+        "Autorización más reciente (08/07/2026) difiere en valor (USD 570.000) y unidad (UF4/3913) respecto de la anterior (01/06/2026, USD 440.000, JVG 3929): confirmar cuál es la vigente y si se trata de dos inmuebles distintos.",
+        "Inmueble afectado a Bien de Familia (Acta 375667): verificar desafectación antes de la escrituración."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "mva0xiqgecyra0",
     "fecha": "2026-10-15T21:01:28.216Z",
     "agente": "Candela Carrizo",
