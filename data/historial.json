@@ -1,5 +1,164 @@
 [
   {
+    "id": "mva0xiqgecyra0",
+    "fecha": "2026-10-15T21:01:28.216Z",
+    "agente": "Candela Carrizo",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Belisario Roldán 772",
+    "veredicto": "RECHAZADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Casa",
+        "direccion": "Belisario Roldán 772",
+        "localidad": "El Palomar"
+      },
+      "titulares": [
+        {
+          "nombre": "José Rubén Arnaudo",
+          "dni": "5067775"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 115.000 (inicial), luego USD 111.000 (reducción)",
+        "fecha_firma": "09/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "31/10/2026",
+        "comision_porcentaje": "3% + 7%",
+        "direccion": "Belisario Roldán 772, El Palomar",
+        "firmante_nombre": "José Rubén Arnaudo",
+        "firmante_dni": "5067775"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "José Rubén Arnaudo",
+            "dni": "5067775"
+          },
+          {
+            "nombre": "Rita Delfina Ledesma",
+            "dni": "9470907"
+          }
+        ],
+        "direccion": "Belisario Roldán 772, El Palomar (antes Haedo), Morón",
+        "m2_cubiertos": null,
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "237,50 m² (según cédula catastral)",
+        "matricula_rpi": "128547",
+        "sello_rpi": true
+      },
+      "plano": {
+        "encontrado": true,
+        "m2_cubiertos": "123,62 m²",
+        "m2_semicubiertos": "35,31 m²",
+        "m2_descubiertos": "78,57 m²",
+        "m2_totales": "237,50 m²",
+        "detalle": "Plano de mensura, fecha 21/12/1978"
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "Candela Carrizo",
+        "agente_dni": "46091745"
+      },
+      "dnis": [
+        {
+          "nombre": "José Rubén Arnaudo",
+          "numero": "5067775"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "José Rubén Arnaudo",
+          "dni": "5067775",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": false,
+          "detalle": "Autorización: José Rubén Arnaudo. Escritura: José Rubén Arnaudo (vendedor) y Rita Delfina Ledesma (compradora)."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": ""
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": ""
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": ""
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": ""
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": ""
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "m2_escritura_vs_plano": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "Totales coinciden 237,50 m². Cubiertos escritura no declara, plano 123,62 m²."
+        }
+      },
+      "documentos_faltantes": [
+        "DNI de Rita Delfina Ledesma",
+        "Formulario UIF de Rita Delfina Ledesma"
+      ],
+      "alertas": [
+        "La autorización es de venta pero la escritura presenta compradora distinta al autorizante. Aclarar si es operación válida.",
+        "Falta UIF de compradora Rita Delfina Ledesma, obligatorio antes de escritura.",
+        "Precio bajado vía email de USD 115.000 a USD 111.000; confirmar nueva autorización."
+      ],
+      "veredicto": "RECHAZADO"
+    }
+  },
+  {
     "id": "mva0sj95za6091",
     "fecha": "2026-10-15T20:57:35.609Z",
     "agente": "CANDELA CARRIZO",
