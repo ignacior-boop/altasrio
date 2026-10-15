@@ -1,5 +1,157 @@
 [
   {
+    "id": "mva0sj95za6091",
+    "fecha": "2026-10-15T20:57:35.609Z",
+    "agente": "CANDELA CARRIZO",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Belisario Roldán 772",
+    "veredicto": "APTO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Casa",
+        "direccion": "Belisario Roldán 772",
+        "localidad": "El Palomar"
+      },
+      "titulares": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "5.067.775"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 111.000",
+        "fecha_firma": "10/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "26/01/2027",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Belisario Roldán 772, El Palomar, Buenos Aires",
+        "firmante_nombre": "JOSÉ RUBÉN ARNAUDO",
+        "firmante_dni": "5.067.775"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "JOSÉ RUBÉN ARNAUDO",
+            "dni": "5.067.775"
+          }
+        ],
+        "direccion": "Belisario Roldán 772, El Palomar (antes Haedo), Partido de Morón, Buenos Aires",
+        "m2_cubiertos": null,
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "237,50 m²",
+        "matricula_rpi": "128.547",
+        "sello_rpi": true
+      },
+      "plano": {
+        "encontrado": true,
+        "m2_cubiertos": "158,93 m²",
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "237,50 m²",
+        "detalle": "Plano de obra existente y sin permiso, propietaria Rita Delfina Ledesma, 21/12/1979"
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "CANDELA CARRIZO",
+        "agente_dni": "46.091.745"
+      },
+      "dnis": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "numero": "5.067.775"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "05067775",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": ""
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": ""
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": ""
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": ""
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": ""
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": ""
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": ""
+        },
+        "m2_escritura_vs_plano": {
+          "aplica": true,
+          "ok": true,
+          "detalle": ""
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "Autorización indica precio USD 115.000 pero baja de precio por email autoriza USD 111.000; verificar cuál es el vigente.",
+        "La escritura está a nombre del comprador (ARNAUDO); el título de la vendedora original (LEDESMA) surge del antecedente dominial; verificar cadena de dominio completa.",
+        "Plano a nombre de Rita Delfina Ledesma (antigua propietaria); parte de la obra figura sin permiso (35,31 m²)."
+      ],
+      "veredicto": "APTO"
+    }
+  },
+  {
     "id": "mv9ydzrpgrs0tf",
     "fecha": "2026-10-15T19:50:17.941Z",
     "agente": "CANDELA CARRIZO",
