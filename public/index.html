@@ -250,6 +250,10 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
     "m2_descubiertos": string or null, "m2_totales": string or null,
     "matricula_rpi": string or null, "sello_rpi": boolean
   },
+  "plano": {
+    "encontrado": boolean, "m2_cubiertos": string or null, "m2_semicubiertos": string or null,
+    "m2_descubiertos": string or null, "m2_totales": string or null, "detalle": string or null
+  },
   "reglamento_copropiedad": {
     "encontrado": boolean, "permite_uso_profesional": boolean or null, "permite_uso_comercial": boolean or null, "detalle": string or null
   },
@@ -269,7 +273,8 @@ Analizá todos los documentos adjuntos y devolvé ÚNICAMENTE un JSON válido (s
     "direccion_autorizacion_vs_escritura": { "ok": boolean, "detalle": string },
     "declaratoria_vs_escritura": { "aplica": boolean, "ok": boolean or null, "detalle": string },
     "declaratoria_vs_autorizacion": { "aplica": boolean, "ok": boolean or null, "detalle": string },
-    "poder_habilita_firmante": { "aplica": boolean, "ok": boolean or null, "detalle": string }
+    "poder_habilita_firmante": { "aplica": boolean, "ok": boolean or null, "detalle": string },
+    "m2_escritura_vs_plano": { "aplica": boolean, "ok": boolean or null, "detalle": string }
   },
   "documentos_faltantes": string[], "alertas": string[],
   "veredicto": "APTO" or "OBSERVADO" or "RECHAZADO"
@@ -318,12 +323,14 @@ FIRMAS ELECTRÓNICAS (Contractia u otra plataforma similar): Muchos documentos i
 Regla: si ese mismo Código de Auditoría aparece en el encabezado de TODAS las páginas del PDF (incluidas las páginas de la Autorización en sí, no solo la última hoja de detalle de firmas o un certificado anexo), la firma electrónica de esa persona es válida para la TOTALIDAD del documento, con el mismo efecto que una firma de puño y letra. Tratá a esa persona como firmante pleno de la autorización.
 En ese caso: multiples_autorizaciones puede ser true (manuscrita + electrónica combinadas son válidas como conjunto), declaratoria_vs_autorizacion.ok=true si todos los herederos firmaron (de puño y letra o electrónicamente, indistintamente), y NO generes alertas de duda tipo "falta confirmar si la firma electrónica corresponde a la Autorización o solo a otro anexo" cuando el código de auditoría del encabezado es idéntico en todas las páginas del PDF — eso ya lo confirma. Solo marcá ok=false o generá alerta si el código de auditoría de la página de detalle de firmas NO coincide con el de las páginas de la Autorización (indicio de que la firma electrónica pertenece a un documento distinto).
 
-M² declarados: NO se extraen ni se verifican en la Autorización (no es un dato obligatorio ahí y no se cruza). Si hay Escritura presentada, extraé los m² ÚNICAMENTE de ahí, con esta prioridad:
+M² declarados: NO se extraen ni se verifican en la Autorización (no es un dato obligatorio ahí y no se cruza). Si hay Escritura presentada, extraé los m² de la escritura ÚNICAMENTE de la escritura (nunca de un plano: los m² del plano van en "plano", ver más abajo), con esta prioridad:
 1. Superficie explícita (superficie cubierta, sup. total, m², etc).
 2. Si no hay, buscar medidas de frente y fondo (en números o letras), convertir a metros y multiplicar frente×fondo. Indicar ej: "~487 m² (calculado frente×fondo)".
 3. Si no se pueden determinar, null y alerta "M² no encontrados en escritura, verificar manualmente".
 Si NO hay Escritura presentada (por ejemplo, en una locación sin escritura adjunta), dejá los campos de m² en null y NO generes ninguna alerta al respecto — no es un dato disponible ni obligatorio en ese caso.
 NO confundir m² con números de matrícula, partida, nomenclatura catastral, folio, tomo o inscripción RPI.
+PLANOS: si se adjuntó un plano (plano de mensura, de obra, de subdivisión/PH o croquis con superficies), completá "plano" con encontrado=true y los m² que figuren EN EL PLANO (m2_cubiertos, m2_semicubiertos, m2_descubiertos, m2_totales, con el mismo formato que la escritura, ej: "62,40 m²"). Si el plano no declara algún tipo de superficie, dejalo en null: no lo calcules ni lo copies de la escritura. En "detalle" poné el tipo de plano y la fecha o el profesional si figuran (null si no). Los m² del plano NUNCA se mezclan con los de la escritura: cada documento aporta los suyos. Si NO hay plano: plano.encontrado=false y todos sus campos en null, y NO generes ninguna alerta por la ausencia de plano (es opcional).
+Cruce m2_escritura_vs_plano: aplica=true solo si plano.encontrado=true Y la escritura está presente con m² determinados. En ese caso compará cada tipo de superficie que esté declarado en AMBOS documentos (cubiertos, semicubiertos, descubiertos, totales): ok=false si alguno difiere en más de 0,5 m² (tolerancia por redondeo) y en "detalle" listá cada diferencia con ambos valores, ej: "Cubiertos: escritura 62,40 m² vs plano 58,90 m²". Si todo coincide: ok=true y detalle "Los m² de la escritura y del plano coinciden.". Si no hay plano, no hay escritura o no hay ningún tipo de superficie comparable: aplica=false, ok=null, detalle="". Un cruce con ok=false hace que el veredicto sea al menos OBSERVADO.
 No generes ningún cruce ni alerta comparando m² de la autorización contra la escritura.
 Cédula catastral: NO es requerida. No mencionarla en documentos_faltantes.
 
@@ -348,7 +355,8 @@ const CRUCES_LABELS = {
   direccion_autorizacion_vs_escritura: "Dirección: Autorización vs Escritura",
   declaratoria_vs_escritura: "Declaratoria: Herederos vs Escritura",
   declaratoria_vs_autorizacion: "Declaratoria: Herederos vs Autorización",
-  poder_habilita_firmante: "Poder: Apoderado vs Firmante"
+  poder_habilita_firmante: "Poder: Apoderado vs Firmante",
+  m2_escritura_vs_plano: "M²: Escritura vs Plano"
 };
 
 function IconCheck() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#1A7A4A"/><path d="M7 12.5l3 3 7-7" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>; }
@@ -428,12 +436,16 @@ function buildDocChecklist(r) {
   }
 
   // Escritura
+  const pl = r.plano || {};
+  const planoAlertas = pl.encontrado ? takeAlertas(/plano/) : [];
   const esc = r.escritura || {};
   const escFalt = takeFaltantes(f => /escritura/.test(f));
   if (esc.encontrada || esc.requerida || escFalt.length) {
     const notes = [...fallan(["nombre_autorizacion_vs_escritura", "direccion_autorizacion_vs_escritura", "declaratoria_vs_escritura"]), ...takeAlertas(/escritura|m2|m²|matricula|rpi|sello|superficie/)];
     mk("Escritura", !!esc.encontrada, esc.encontrada ? notes : ["Falta presentar este documento."], esc.matricula_rpi ? "Presentada · matrícula " + esc.matricula_rpi : "Presentada");
   }
+
+  if (pl.encontrado) mk("Planos", true, [...fallan(["m2_escritura_vs_plano"]), ...planoAlertas], pl.m2_totales ? "Presentado · " + pl.m2_totales + " totales" : "Presentado");
 
   // Documentos condicionales (solo si se presentaron)
   if (r.declaratoria && r.declaratoria.encontrada)
@@ -1194,6 +1206,23 @@ function App() {
                   </div>
                 )}
 
+                {r.plano?.encontrado && (
+                  <div className="card">
+                    <div className="card__title">Planos</div>
+                    <div className="datagrid">
+                      <DC label="M² Cubiertos" value={r.plano?.m2_cubiertos}/>
+                      <DC label="M² Totales" value={r.plano?.m2_totales}/>
+                      {(r.plano?.m2_semicubiertos || r.plano?.m2_descubiertos) && <>
+                        <DC label="M² Semicubiertos" value={r.plano?.m2_semicubiertos}/>
+                        <DC label="M² Descubiertos" value={r.plano?.m2_descubiertos}/>
+                      </>}
+                      {r.plano?.detalle && <DC label="Detalle" value={r.plano.detalle} span/>}
+                    </div>
+                    {r.cruces?.m2_escritura_vs_plano && r.cruces.m2_escritura_vs_plano.aplica !== false && r.cruces.m2_escritura_vs_plano.ok === false &&
+                      <CR status="warn" label="Diferencia de m² entre escritura y plano" detail={r.cruces.m2_escritura_vs_plano.detalle}/>}
+                  </div>
+                )}
+
                 {r.reglamento_copropiedad?.encontrado && (
                   <div className="card">
                     <div className="card__title">Reglamento de Copropiedad</div>
@@ -1255,6 +1284,7 @@ function App() {
                   <div className="card__title">Verificación cruzada</div>
                   {Object.entries(r.cruces||{}).map(([key,val]) => {
                     const na = val.aplica === false;
+                    if (na && key === "m2_escritura_vs_plano") return null;
                     return <CR key={key} status={na ? "na" : val.ok ? "ok" : "err"} label={CRUCES_LABELS[key]||key} detail={val.detalle}/>;
                   })}
                 </div>
