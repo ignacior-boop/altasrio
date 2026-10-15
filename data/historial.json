@@ -1,5 +1,159 @@
 [
   {
+    "id": "mv9y9psrwfs8cj",
+    "fecha": "2026-10-15T19:46:58.395Z",
+    "agente": "CANDELA CARRIZO",
+    "cargado_por": "Ignacio Rocca",
+    "direccion": "Belisario Roldán 772",
+    "veredicto": "OBSERVADO",
+    "resultado": {
+      "inmueble": {
+        "tipo": "Casa",
+        "direccion": "Belisario Roldán 772",
+        "localidad": "El Palomar"
+      },
+      "titulares": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "5.067.775"
+        }
+      ],
+      "autorizacion": {
+        "encontrada": true,
+        "tipo_operacion": "VENTA",
+        "multiples_autorizaciones": false,
+        "uif_en_escritura": false,
+        "valor_autorizado": "USD 115.000",
+        "fecha_firma": "10/07/2026",
+        "plazo_dias_habiles": 120,
+        "fecha_vencimiento_calculada": "23/12/2026",
+        "comision_porcentaje": "3% + IVA",
+        "direccion": "Belisario Roldán 772, El Palomar, Buenos Aires",
+        "firmante_nombre": "JOSÉ RUBÉN ARNAUDO",
+        "firmante_dni": "5.067.775"
+      },
+      "escritura": {
+        "requerida": true,
+        "encontrada": true,
+        "titulares": [
+          {
+            "nombre": "JOSÉ RUBÉN ARNAUDO",
+            "dni": "5.067.775"
+          }
+        ],
+        "direccion": "Belisario Roldán 772, El Palomar (antes Haedo), Partido de Morón, Buenos Aires",
+        "m2_cubiertos": null,
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": "237,50 m²",
+        "matricula_rpi": "128.547 (Partido de Morón)",
+        "sello_rpi": true
+      },
+      "plano": {
+        "encontrado": true,
+        "m2_cubiertos": "158,93 m²",
+        "m2_semicubiertos": null,
+        "m2_descubiertos": null,
+        "m2_totales": null,
+        "detalle": "Plano de obra existente y sin permiso. Propiedad de Rita Delfina Ledesma. Calle Roldán 772, Haedo, Partido de Morón. Registrado el 21/12/1979. Superficie del terreno: 237,50 m². Cubierta total: 158,93 m² (aprobada 123,62 m² + sin permiso 35,31 m²). Terreno libre: 78,57 m²."
+      },
+      "reglamento_copropiedad": {
+        "encontrado": false,
+        "permite_uso_profesional": null,
+        "permite_uso_comercial": null,
+        "detalle": null
+      },
+      "certificado_servicios": {
+        "encontrado": true,
+        "agente_nombre": "CANDELA CARRIZO",
+        "agente_dni": "46.091.745"
+      },
+      "dnis": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "numero": "5.067.775"
+        }
+      ],
+      "uifs": [
+        {
+          "nombre": "JOSÉ RUBÉN ARNAUDO",
+          "dni": "05067775",
+          "pep_completado": true,
+          "pep_resultado": "NO"
+        }
+      ],
+      "declaratoria": {
+        "encontrada": false,
+        "herederos": []
+      },
+      "poder": {
+        "encontrado": false,
+        "apoderado_nombre": null,
+        "apoderado_dni": null,
+        "poderdante_nombre": null,
+        "vigente": null
+      },
+      "cruces": {
+        "nombre_autorizacion_vs_escritura": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El firmante de la autorización (JOSÉ RUBÉN ARNAUDO) coincide con el titular de la escritura (JOSÉ RUBÉN ARNAUDO)."
+        },
+        "nombre_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El firmante de la autorización (JOSÉ RUBÉN ARNAUDO) coincide con el nombre en el DNI presentado (ARNAUDO JOSE RUBEN)."
+        },
+        "nombre_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El firmante de la autorización (JOSÉ RUBÉN ARNAUDO) coincide con el nombre en el formulario UIF (José Ruben Arnaudo)."
+        },
+        "dni_autorizacion_vs_dni": {
+          "ok": true,
+          "detalle": "El DNI declarado en la autorización (5.067.775) coincide con el número del DNI presentado (M5.067.775)."
+        },
+        "dni_autorizacion_vs_uif": {
+          "aplica": true,
+          "ok": true,
+          "detalle": "El DNI declarado en la autorización (5.067.775) coincide con el DNI en el formulario UIF (05067775)."
+        },
+        "direccion_autorizacion_vs_escritura": {
+          "ok": true,
+          "detalle": "La dirección en la autorización (Belisario Roldán 772, El Palomar) coincide con la escritura (Belisario Roldán 772, El Palomar/Haedo, Partido de Morón)."
+        },
+        "declaratoria_vs_escritura": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "declaratoria_vs_autorizacion": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay declaratoria de herederos."
+        },
+        "poder_habilita_firmante": {
+          "aplica": false,
+          "ok": null,
+          "detalle": "No aplica. No hay poder notarial presentado."
+        },
+        "m2_escritura_vs_plano": {
+          "aplica": true,
+          "ok": false,
+          "detalle": "La escritura declara superficie total del terreno de 237,50 m². El plano declara superficie cubierta total de 158,93 m² (aprobada 123,62 m² + sin permiso 35,31 m²) sobre un terreno de 237,50 m². El terreno coincide, pero la escritura no desagrega m² cubiertos y el plano los detalla como 158,93 m² cubiertos. No es posible comparar directamente m² cubiertos entre ambos documentos ya que la escritura solo informa superficie total de terreno. Se recomienda verificar manualmente la concordancia entre los m² construidos del plano y los que corresponden al inmueble actual."
+        }
+      },
+      "documentos_faltantes": [],
+      "alertas": [
+        "La autorización fue firmada por un precio de USD 115.000, pero existe un correo electrónico de Jose Arnaudo del 21/08/2026 autorizando bajar el precio a USD 111.000. El valor vigente autorizado sería USD 111.000, pero esta modificación no está instrumentada en un addendum formal a la autorización. Se recomienda formalizar la baja de precio mediante documento firmado.",
+        "La escritura indica superficie total de terreno de 237,50 m² (frente 10 m × fondo 23,75 m). El plano de obra (1979) declara cubierta total de 158,93 m² sobre el mismo terreno de 237,50 m², incluyendo 35,31 m² sin permiso municipal. Verificar si las mejoras sin permiso han sido regularizadas.",
+        "El plano es de 1979 (obra existente y sin permiso registrado como 'sujeto a demolición'). Es recomendable verificar si existe plano actualizado que refleje el estado actual del inmueble.",
+        "La matrícula del RPI figura en la escritura como 128.547 (Partido de Morón), pero la autorización tiene el campo de matrícula en blanco. Se recomienda completar ese dato en la autorización.",
+        "La escritura se encuentra a nombre de JOSÉ RUBÉN ARNAUDO como comprador (2017). El plano está a nombre de Rita Delfina Ledesma (propietaria anterior). Esto es consistente con la historia dominial."
+      ],
+      "veredicto": "OBSERVADO"
+    }
+  },
+  {
     "id": "mv9xtjqz2orj5e",
     "fecha": "2026-10-15T19:34:24.059Z",
     "agente": "CANDELA CARRIZO",
